@@ -190,6 +190,11 @@ function savestuff!(fid_h5::HDF5.File,ntobesaved::Int64,pars::Dict,nsaved::Base.
                     
     saveevery = pars["saveevery"]    
     nmpar = size(m,1)
+    if llkprival==nothing
+        llkprivalexists = false
+    else
+        llkprivalexists = true
+    end
 
     ##  outgrpname = "output"
     if algo==:NUTS || algo==:plainHMC
@@ -232,10 +237,10 @@ function savestuff!(fid_h5::HDF5.File,ntobesaved::Int64,pars::Dict,nsaved::Base.
         ucur_m_h5 = HDF5.create_dataset(fid_h5, namenlppd*"_m", Float64, ((1,), (-1,)),chunk=(chunksize1d,))        
         it_h5 = HDF5.create_dataset(fid_h5, "iter", Int64, ((1,), (-1,)),chunk=(chunksize1d,)  )
         ucur_h5 = HDF5.create_dataset(fid_h5, namenlppd, Float64, ((1,), (-1,)),chunk=(chunksize1d,)  )
-        if !ismissing(llkprival[1])
+        if llkprivalexists && !ismissing(llkprival[1])
             llk_h5 = HDF5.create_dataset(fid_h5, "likelihoodval", Float64, ((1,), (-1,)),chunk=(chunksize1d,)  )
         end
-        if !ismissing(llkprival[2])
+        if llkprivalexists && !ismissing(llkprival[2])
             prior_h5 = HDF5.create_dataset(fid_h5, "priorval", Float64, ((1,), (-1,)),chunk=(chunksize1d,)  )
         end
         nacc_h5 = HDF5.create_dataset(fid_h5, "nacc", Int64, ((1,), (-1,)),chunk=(chunksize1d,)  )
@@ -262,13 +267,13 @@ function savestuff!(fid_h5::HDF5.File,ntobesaved::Int64,pars::Dict,nsaved::Base.
     ucur_h5 = HDF5.open_dataset(fid_h5,namenlppd)
     HDF5.set_extent_dims(ucur_h5,(it,))
     ucur_h5[it] = ucurval
-    if !ismissing(llkprival[1])
+    if llkprivalexists && !ismissing(llkprival[1])
         # likelihood value
         llk_h5 = HDF5.open_dataset(fid_h5,"likelihoodval")
         HDF5.set_extent_dims(llk_h5,(it,))
         llk_h5[it] = llkprival[1]
     end
-    if !ismissing(llkprival[2])
+    if llkprivalexists && !ismissing(llkprival[2])
         # prior value
         prior_h5 = HDF5.open_dataset(fid_h5,"priorval")
         HDF5.set_extent_dims(prior_h5,(it,))
