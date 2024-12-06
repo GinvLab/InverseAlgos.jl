@@ -8,9 +8,20 @@ abstract type AbstractHMCParams <: AbstractMCParams end
 
 abstract type AdaptEpsLF end
 
+"""
+($TYPEDFIELDS)
+
+Average the acceptance rate during the construction of the balanced tree to find a 'good' ϵ.
+"""
 struct AvEpsFromTree <: AdaptEpsLF
 end
 
+
+"""
+($TYPEDFIELDS)
+
+Average the acceptance rate every N HMC iterations to find a 'good' ϵ.
+"""
 struct AvEpsFromHMCIter <: AdaptEpsLF
     "Number of HMC iterations to average on"
     N::Int64

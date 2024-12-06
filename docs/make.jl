@@ -1,13 +1,16 @@
 using Documenter, InverseAlgos
 
 makedocs(modules = [InverseAlgos],
-         repo=Remotes.GitHub("GinvLab","InverseAlgos.jl"), #"https://github.com/GinvLab/InverseAlgos.jl"
+         repo=Remotes.GitHub("GinvLab","InverseAlgos.jl"), 
          sitename="InverseAlgos.jl",
          authors = "Andrea Zunino",
          format = Documenter.HTML(prettyurls=get(ENV,"CI",nothing)=="true"),
          pages = [
              "Home" => "index.md",
-         ]
+             "MCSamplers" => "mcsamplers.md",
+             "Optimizers" => "optimizers.md"
+         ],
+         #warnonly=true
          )
 
 deploydocs(
