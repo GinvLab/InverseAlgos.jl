@@ -14,9 +14,9 @@ makedocs(modules = [InverseAlgos],
          )
 
 deploydocs(
-    repo="github.com/GinvLab/MCsamplers.jl.git", 
+    repo="github.com/GinvLab/InverseAlgos.jl.git", 
     devbranch = "main",
-    deploy_config = Documenter.GitLab(),
+    deploy_config = Documenter.GitHubActions(),
     branch = "gh-pages"
 )
 
