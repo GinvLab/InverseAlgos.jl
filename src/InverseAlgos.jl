@@ -7,6 +7,6 @@ include("MCSamplers/MCSamplers.jl")
 
 include("Optimizers/Optimizers.jl")
 
-include("Optimizers/KronLinInv.jl")
+include("KronLinInv/KronLinInv.jl")
 
 end # module InverseAlgos
