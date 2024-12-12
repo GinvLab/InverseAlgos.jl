@@ -8,9 +8,10 @@ makedocs(modules = [InverseAlgos],
          pages = [
              "Home" => "index.md",
              "MCSamplers" => "mcsamplers.md",
-             "Optimizers" => "optimizers.md"
+             "Optimizers" => "optimizers.md",
+             "KronLinInv" => "kronlininv.md"
          ],
-         #warnonly=true
+         warnonly=true
          )
 
 deploydocs(

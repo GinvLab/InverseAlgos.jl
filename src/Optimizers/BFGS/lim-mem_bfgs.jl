@@ -95,10 +95,7 @@ function cubint(a::Real, b::Real, phia::Real, phib::Real, ga::Real, gb::Real)
         alpha = a
     else
         d1 = ga + gb -3*(phia - phib)/(a - b)
-        # if (d1^2) - ga*gb <0
-        #     println("WWRRROONNGGGG")
-        #     return 0.001
-        # end
+   
         d2 = sqrt( (d1^2) - ga*gb )
 
         alpha = b - (b - a)*(( gb + d2 - d1 )/( gb - ga + 2*d2))
@@ -176,9 +173,8 @@ function linesearchWolfe!(fh!::Function,x0αp::Vector{Float64},ϕ0::Float64,
     αold = 0.0
     @assert 0.0<=α0
 
-    @assert 0.0<c1<c2
-    @assert c1<c2<1.0
-
+    @assert 0.0<c1<c2<1.0
+   
     dϕdα_0 = dot(g,p)
     dϕdαold = dϕdα_0
 
@@ -203,8 +199,11 @@ function linesearchWolfe!(fh!::Function,x0αp::Vector{Float64},ϕ0::Float64,
 
         ## Wolfe 1 check
         if ϕ>(ϕ0+c1*α0*dϕdα_0) || (ϕ>=ϕold && i>1 )
-            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,ϕ0,
-                                      dϕdα_0,αold,α,ϕold,ϕ,dϕdαold,dϕdα,
+            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,
+                                      ϕ0,dϕdα_0,
+                                      αold,α,
+                                      ϕold,ϕ,
+                                      dϕdαold,dϕdα,
                                       bounds=bounds,
                                       maxiter=maxiterzoom)
             return αout,ϕout,success # ϕ was calculated with αout
@@ -219,8 +218,11 @@ function linesearchWolfe!(fh!::Function,x0αp::Vector{Float64},ϕ0::Float64,
 
         ## Overshoot, zoom
         if dϕdα >= 0.0
-            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,ϕ0,
-                                      dϕdα_0,α,αold,ϕ,ϕold,dϕdα,dϕdαold,
+            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,
+                                      ϕ0,dϕdα_0,
+                                      α,αold, # swapped w.r.t. Wolfe check 1
+                                      ϕ,ϕold, # swapped w.r.t. Wolfe check 1
+                                      dϕdα,dϕdαold, # swapped w.r.t. Wolfe check 1
                                       bounds=bounds,
                                       maxiter=maxiterzoom)
             return αout,ϕout,success # ϕ was calculated with αout
@@ -233,7 +235,7 @@ function linesearchWolfe!(fh!::Function,x0αp::Vector{Float64},ϕ0::Float64,
         if grat > 1
             α = grat*αold #Estimate as desired change in gradient over actual change
         else
-            α=2*αold #Don't do the above when it doesn't result in a step increase
+            α = 2*αold #Don't do the above when it doesn't result in a step increase
         end
         # update ϕold
         ϕold = ϕ
@@ -390,9 +392,9 @@ function lmbfgs(fh!::Function,
                 saveres::Bool=true)
     ##
     if bounds==nothing
-        println("\n***  L-BFGS optimization (unconstrained) ***")
+        @info "\n***  L-BFGS optimization (unconstrained) ***\n"
     else
-        println("\n***  L-BFGS optimization with box constraints  ***")
+        @info "\n***  L-BFGS optimization with box constraints  ***\n"
     end
 
     ## algo 7.5, Nocedal & Wright, 2006
@@ -423,7 +425,7 @@ function lmbfgs(fh!::Function,
     gradf_k = similar(x0)
     misf[1] = fh!(gradf_k,x[1])
     g0norm = norm(gradf_k)
-    println(" Initial misfit: $(misf[1])")
+    @info " Initial misfit: $(misf[1])"
 
     # pre-allocate stuff
     snew = similar(x0)
@@ -438,7 +440,7 @@ function lmbfgs(fh!::Function,
             rm(outfile)
         end
         savestuff!(outfile,overwriteoutput,0,misf[1],x[1])
-        println(" Saving results to $outfile")
+        @info " Saving results to $outfile"
     end
 
     ##------------------------
@@ -476,13 +478,13 @@ function lmbfgs(fh!::Function,
 
         # compute initial step length based on prior knowledge
         if k==1
-            # first iteration only
-            if target_update == 0
-                α0 = 0.1*ϕ0/(sum(p.^2)) # Assuming minimum objective is 0, tries to take a step 10% of the way there
-            else
-                # α0 = target_update / sqrt(sum(p.^2))
+            # # first iteration only
+            # if target_update == 0
+            #     α0 = 0.1*ϕ0/(sum(p.^2)) # Assuming minimum objective is 0, tries to take a step 10% of the way there
+            # else
+            #     # α0 = target_update / sqrt(sum(p.^2))
                 α0 = target_update
-            end 
+            # end 
         else
             α0 = 1
         end
@@ -497,25 +499,31 @@ function lmbfgs(fh!::Function,
                                                c1=c1,c2=c2)
         ##------------------------
         if !success
-            println("\n Line search failed, resetting history at iteration $k")
-            p = - γ .* gradf_k
-            Nmemk = 0 # Wipe history for ρ, s and y!
+            @warn "The line search did not converge at iteration $k"
+            # println("\n Line search failed, resetting history at iteration $k")
+            # p = - γ .* gradf_k
+            # Nmemk = 0 # Wipe history for ρ, s and y!
             
-            α,misf[k+1],success = linesearchWolfe!(fh!,x0αp,ϕ0,gradf_k,x[k],p,
-                                                   bounds=bounds,
-                                                   α0=α0,maxiterwolfe=maxiterwolfe,
-                                                   maxiterzoom=maxiterzoom,
-                                                   c1=c1,c2=c2)
+            # α,misf[k+1],success = linesearchWolfe!(fh!,x0αp,ϕ0,gradf_k,x[k],p,
+            #                                        bounds=bounds,
+            #                                        α0=α0,maxiterwolfe=maxiterwolfe,
+            #                                        maxiterzoom=maxiterzoom,
+            #                                        c1=c1,c2=c2)
         end
-        if !success
-            println(" Line search failed AGAIN (iteration $k)   ")
-            #println(" Current misfit $(misf[k]).\nAborting... \n")
-            return x[1:k],misf[1:k] 
-        end
+        # if !success
+        #     println(" Line search failed AGAIN (iteration $k)   ")
+        #     #println(" Current misfit $(misf[k]).\nAborting... \n")
+        #     return x[1:k],misf[1:k] 
+        # end
         ##------------------------
-        
-        print("\r Iteration $k of $maxiter, misfit: $(misf[k+1])         ")
 
+        ter = REPL.Terminals.TTYTerminal("", stdin, stdout, stderr)
+        REPL.Terminals.clear_line(ter)
+        #@info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
+        @info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
+        REPL.Terminals.cmove_line_up(ter)
+        flush(stdout)
+        sleep(2)
         ##------------------------
         # update the solution x
         x[k+1] .= x[k] .+ α.*p
@@ -538,7 +546,7 @@ function lmbfgs(fh!::Function,
 
         # if the solution does not change with the update...
         if all(snew.==0.0)
-            println("\n*** all(x[k+1].-x[k])==0.0, aborting ***")
+            @info "\n*** all(x[k+1].-x[k])==0.0, aborting ***"
             println()
             return x[1:k+1],misf[1:k+1] 
         end
@@ -557,12 +565,12 @@ function lmbfgs(fh!::Function,
         gnorm = norm(gradf_k)
         if abs(gnorm/g0norm) < τgrad
             # println("gnorm is "*string(gnorm)*" and g0norm is "*string(g0norm))
-            println("\n***  norm(gradf) < τgrad, breaking iterations ***")
+            @info "\n***  norm(gradf) < τgrad, breaking iterations ***"
             return x[1:k+1],misf[1:k+1]
         end
     end
 
-    println("\n")
+    #println("\n")
     return x[1:maxiter+1],misf[1:maxiter+1]
 end
 

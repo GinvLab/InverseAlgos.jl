@@ -4,8 +4,8 @@
 
 
 ```@contents
-Pages = ["index.md","mcsamplers.md","optimizers.md"]
-Depth = 3
+Pages = ["index.md","mcsamplers.md","optimizers.md","kronlininv.md"]
+Depth = 2
 ```
 
 ## Overview
@@ -15,6 +15,8 @@ Probabilistic and deterministic inverse algorithms for Geophysical problems and 
 - [MCSamplers](@ref) for probabilistic (Monte Carlo) inversions, and,
 
 - [Optimizers](@ref) for deterministic inversion (optimization).
+
+- [KronLinInv](@ref) for linear inversion under Gaussian and separability assumptions
 
 
 ## Installation

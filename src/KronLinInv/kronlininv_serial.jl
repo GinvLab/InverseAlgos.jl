@@ -1,32 +1,32 @@
 
 
-@doc raw"""
-    posteriormean_serial(klifac::KLIFactors,Gfwd::FwdOps,mprior::Array{Float64,1},
-                  dobs::Array{Float64,1})
+# @doc raw"""
+#     posteriormean_serial(klifac::KLIFactors,Gfwd::FwdOps,mprior::Array{Float64,1},
+#                   dobs::Array{Float64,1})
 
-Computes the posterior mean model, purely serial version.
+# Computes the posterior mean model, purely serial version.
 
-# Arguments
-- `klifac`: a structure containing the required "factors" previously computed with 
-    the function `calcfactors()`. It includes
-    * `U1, U2, U3` ``\mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3``  of  ``F_{\sf{A}}``
-    * `diaginvlambda` ``F_{\sf{B}}``
-    * `iUCmGtiCd1, iUCmGtiCd2, iUCmGtiCd3` ``\mathbf{U}_1^{-1}
-      \mathbf{C}_{\rm{M}}^{\rm{x}}
-      (\mathbf{G}^{\rm{x}})^{\sf{T}}(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} ``,
-      `` \mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}}
-      (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1} ``,
-      `` \mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}}
-      (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} ``
-      of  ``F_{\sf{D}} ``
-- `FwdOps`: a structure containing the three forward matrices
-    * `G1, G2, G3` `` \mathbf{G} = \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3} ``
-- `mprior`: prior model (vector)
-- `dobs`:  observed data (vector)
+# # Arguments
+# - `klifac`: a structure containing the required "factors" previously computed with 
+#     the function `calcfactors()`. It includes
+#     * `U1, U2, U3` ``\mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3``  of  ``F_{\sf{A}}``
+#     * `diaginvlambda` ``F_{\sf{B}}``
+#     * `iUCmGtiCd1, iUCmGtiCd2, iUCmGtiCd3` ``\mathbf{U}_1^{-1}
+#       \mathbf{C}_{\rm{M}}^{\rm{x}}
+#       (\mathbf{G}^{\rm{x}})^{\sf{T}}(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} ``,
+#       `` \mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}}
+#       (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1} ``,
+#       `` \mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}}
+#       (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} ``
+#       of  ``F_{\sf{D}} ``
+# - `FwdOps`: a structure containing the three forward matrices
+#     * `G1, G2, G3` `` \mathbf{G} = \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3} ``
+# - `mprior`: prior model (vector)
+# - `dobs`:  observed data (vector)
 
-# Returns
-- The posterior mean model (vector)
-"""
+# # Returns
+# - The posterior mean model (vector)
+# """
 function posteriormean_serial(klifac::KLIFactors,Gfwd::FwdOps,mprior::Array{Float64,1},
                               dobs::Array{Float64,1})
 
@@ -154,29 +154,29 @@ end
 
 ##============================================================================
 
-@doc raw""" 
-    blockpostcov_serial(klifac::KLIFactors,astart::Int64,aend::Int64,
-                 bstart::Int64,bend::Int64 )
+# @doc raw""" 
+#     blockpostcov_serial(klifac::KLIFactors,astart::Int64,aend::Int64,
+#                  bstart::Int64,bend::Int64 )
 
-Computes a block of the posterior covariance, purely serial version. 
+# Computes a block of the posterior covariance, purely serial version. 
 
-# Arguments
-- `klifac`: a structure containing the required "factors" previously computed with 
-    the function `calcfactors()`. It includes
-    * U1,U2,U3 `` \mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3`` of ``F_{\sf{A}}``
-    * diaginvlambda ``F_{\sf{B}}``
-    * iUCm1, iUCm2, iUCm3  ``\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}} ``,
-      ``\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{y}}``,
-      ``\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{z}}`` of  ``F_{\sf{C}} `` 
-- `Gfwd`: a structure containing the three forward model matrices  G1,G2,G3, where 
-     `` \mathbf{G} =  \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3} ``
-- `astart, aend`: indices of the first and last rowa of the requested block
-- `bstart, bend`: indices of the first and last columns of the requested block
+# # Arguments
+# - `klifac`: a structure containing the required "factors" previously computed with 
+#     the function `calcfactors()`. It includes
+#     * U1,U2,U3 `` \mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3`` of ``F_{\sf{A}}``
+#     * diaginvlambda ``F_{\sf{B}}``
+#     * iUCm1, iUCm2, iUCm3  ``\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}} ``,
+#       ``\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{y}}``,
+#       ``\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{z}}`` of  ``F_{\sf{C}} `` 
+# - `Gfwd`: a structure containing the three forward model matrices  G1,G2,G3, where 
+#      `` \mathbf{G} =  \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3} ``
+# - `astart, aend`: indices of the first and last rowa of the requested block
+# - `bstart, bend`: indices of the first and last columns of the requested block
 
-# Returns
-- The requested block of the posterior covariance.
+# # Returns
+# - The requested block of the posterior covariance.
 
-"""
+# """
 function blockpostcov_serial(klifac::KLIFactors,
                              astart::Int64,aend::Int64,
                              bstart::Int64,bend::Int64 )

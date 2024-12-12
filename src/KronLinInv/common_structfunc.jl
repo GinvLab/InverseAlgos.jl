@@ -72,7 +72,7 @@ end
 ##==========================================================
 
 @doc raw"""
-    calcfactors(Gfwd::FwdOps,Covs::CovMats)
+     kli_calcfactors(Gfwd::FwdOps,Covs::CovMats)
 
 Computes the factors necessary to solve the inverse problem. 
   
@@ -162,7 +162,7 @@ Uses LAPACK.sygvd!(), see <http://www.netlib.org/lapack/lug/node54.html>.
         of  `` F_{\sf{D}} `` 
 
 """
-function calcfactors(Gfwd::FwdOps,Covs::CovMats)
+function kli_calcfactors(Gfwd::FwdOps,Covs::CovMats)
 
     
     ##----------------
@@ -172,7 +172,7 @@ function calcfactors(Gfwd::FwdOps,Covs::CovMats)
         C = getfield(Covs,i)
         if isposdef( C )==false
             fnam = string(fieldname(CovMats,i))
-            error("\n calcfactors(): $(fnam) is not positive definite. Aborting. \n")
+            error("\n kli_calcfactors(): $(fnam) is not positive definite. Aborting. \n")
         end
     end
     
@@ -245,7 +245,7 @@ Computes the posterior mean model for a distributed memory setup.
 
 # Arguments
 - `klifac`: a structure containing the required "factors" previously computed with 
-    the function `calcfactors()`. It includes
+    the function `kli_calcfactors()`. It includes
     * `U1, U2, U3` ``\mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3``  of  ``F_{\sf{A}}``
     * `diaginvlambda` ``F_{\sf{B}}``
     * `iUCmGtiCd1, iUCmGtiCd2, iUCmGtiCd3` ``\mathbf{U}_1^{-1}
@@ -273,11 +273,11 @@ function kli_posteriormean(klifac::KLIFactors,
 
     if parall==:serial
         return posteriormean_serial(klifac,Gfwd,mprior,dobs)
-    elseif parall==:sharedmem
+    elseif parall==:threads
         println("Parallelization in shared memory is work in progress")
         return
     elseif parall==:distribmem
-        return posteriormean_distribmem(klifac,Gfwd,mprior,dobs)
+        return posteriormean_distrmem(klifac,Gfwd,mprior,dobs)
     else
         error("Wrong `parall` argument.")
     end
@@ -295,7 +295,7 @@ Computes a block of the posterior covariance, purely serial version.
 
 # Arguments
 - `klifac`: a structure containing the required "factors" previously computed with 
-    the function `calcfactors()`. It includes
+    the function `kli_calcfactors()`. It includes
     * U1,U2,U3 `` \mathbf{U}_1``, ``\mathbf{U}_2``, ``\mathbf{U}_3`` of ``F_{\sf{A}}``
     * diaginvlambda ``F_{\sf{B}}``
     * iUCm1, iUCm2, iUCm3  ``\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}} ``,

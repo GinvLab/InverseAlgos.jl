@@ -13,6 +13,7 @@ module Optimizers
 using LinearAlgebra
 using HDF5
 using DocStringExtensions
+using REPL
 
 ## L-BFGS algo
 export lmbfgs
