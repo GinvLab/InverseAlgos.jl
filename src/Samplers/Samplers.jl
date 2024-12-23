@@ -1,7 +1,7 @@
 
 
 """
-MCSamplers
+Samplers
 
 A module to solve inverse problems using Monte Carlo methods.
 Main targets are geophysical inverse problems.
@@ -12,7 +12,7 @@ algorithm and its variant NUTS and the Extended Metropolis algorithm.
 
 $(EXPORTS)
 """
-module MCSamplers
+module Samplers
 
 using Distributed
 using LinearAlgebra

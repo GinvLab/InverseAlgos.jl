@@ -4,7 +4,7 @@
 
 
 ```@contents
-Pages = ["index.md","mcsamplers.md","optimizers.md","kronlininv.md"]
+Pages = ["index.md","samplers.md","optimizers.md","kronlininv.md"]
 Depth = 2
 ```
 
@@ -12,7 +12,7 @@ Depth = 2
 
 Probabilistic and deterministic inverse algorithms for Geophysical problems and beyond. [InverseAlgos]() contains two main sub-modules: 
 
-- [MCSamplers](@ref) for probabilistic (Monte Carlo) inversions, and,
+- [Samplers](@ref) for probabilistic (Monte Carlo) inversions, and,
 
 - [Optimizers](@ref) for deterministic inversion (optimization).
 

@@ -14,6 +14,7 @@ using LinearAlgebra
 using HDF5
 using DocStringExtensions
 using REPL
+using Logging
 
 ## L-BFGS algo
 export lmbfgs

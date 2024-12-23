@@ -1,7 +1,7 @@
 ```@meta
 ```
 
-# MCSamplers
+# Samplers
 
 
 ```@contents
@@ -11,14 +11,14 @@ Depth = 3
 
 ## Quick overview
 
-`MCSamplers` contains sampling algorithms to solve inverse problems. It focuses mainly on the Hamiltonian Monte Carlo (HMC) algorithm and its variants. 
+`Samplers` contains sampling algorithms to solve inverse problems. It focuses mainly on the Hamiltonian Monte Carlo (HMC) algorithm and its variants. 
 Currently the following samplers are implemented:
 
  * the "standard" HMC algorithm with optional constraints as described in [^4] and [^5], and
  * the No U-Turn (NUTS) algorithm as described in [^8].
  * the Extended Metropolis algorithm as described in [^9].
  
-See the [User guide](@ref) section for an explanation of the basics of `MCSamplers` and some minimal usage examples.
+See the [User guide](@ref) section for an explanation of the basics of `Samplers` and some minimal usage examples.
 
 
 ## Theoretical background 
@@ -105,7 +105,7 @@ and the number of iterations ``L`` [^4].
 
 ### Monte Carlo simulations
 
-All kinds of simulations are started using the function [`runMC`](@ref MCSamplers.runMC). The arguments passed to [`runMC`](@ref MCSamplers.runMC) determine which algorithm will be used, number of iterations, the output files, etc.. The signature of the function is:
+All kinds of simulations are started using the function [`runMC`](@ref Samplers.runMC). The arguments passed to [`runMC`](@ref Samplers.runMC) determine which algorithm will be used, number of iterations, the output files, etc.. The signature of the function is:
 ```julia
 runMC(
     pars::Dict,
@@ -115,12 +115,12 @@ runMC(
     prior
 )
 ```
-The argument `pars` is a dictionary containing a set of generic parameters for the simulation, such as the maximum number of iterations, the name of the simulation, the directory used to write the output, etc. See the documentation of [`runMC`](@ref MCSamplers.runMC) for more details. 
+The argument `pars` is a dictionary containing a set of generic parameters for the simulation, such as the maximum number of iterations, the name of the simulation, the directory used to write the output, etc. See the documentation of [`runMC`](@ref Samplers.runMC) for more details. 
 The argument `MCpar`is a Julia structure which depends on the algorithm intended to be employed. Its type, in fact, determines which algorithm will be used to perform the sampling. As such, the parameters that need to be specified for each algorithm are different, and so the "fields" of the `MCpar` structure. 
 Currently the following `AbstractMCParams` structures (types) are defined:
-  * [`HMCParams`](@ref MCSamplers.HMCParams) for the "standard" HMC algorithm with optional constraints as described in [^4] and [^5];
-  * [`NUTSParams`](@ref MCSamplers.NUTSParams) for the No U-Turn (NUTS) algorithm as described in [^8];
-  * [`ExtMetropParams`](@ref MCSamplers.ExtMetropParams) for the Extended Metropolis algorithm as described in [^9].
+  * [`HMCParams`](@ref Samplers.HMCParams) for the "standard" HMC algorithm with optional constraints as described in [^4] and [^5];
+  * [`NUTSParams`](@ref Samplers.NUTSParams) for the No U-Turn (NUTS) algorithm as described in [^8];
+  * [`ExtMetropParams`](@ref Samplers.ExtMetropParams) for the Extended Metropolis algorithm as described in [^9].
 See their documentation for details.
 The argument `mstart` is a vector containing the starting model for the simulation. The model has to be in the form of a 1D vector for the computations to work, i.e., physically 3D models need to be "unrolled" to 1D.
 The last two arguments, `likelihood` and `prior` are related to the two PDFs composing the posterior PDF as seen above, i.e., the prior PDF ``\rho(\mathbf{m})`` and the likelihood PDF ``L(\mathbf{m})``. However,  `likelihood` and `prior` refer in practice to the **negative logarithm** of those, namely ``- \ln( \rho(\mathbf{m}))`` and the likelihood PDF ``- \ln (L(\mathbf{m})``.
@@ -138,7 +138,7 @@ The output of a simulation is written to two files:
 The first file contains all the input parameters of the simulation which completely specify the problem under study. These include the prior and likelihood models, the generic simulation parameters, etc. Such file is saved in the `.jld2` format (using the package `JLD2`), which is a HDF5-compatible format capable of saving the Julia structures and retrieving them later on.
 The second file contains mainly the results of the simulation, namely the saved models, some statistical info, etc.. Such file is saved in the `.h5` format (using the package `HDF5`).
 
-The full output can be read and saved in an appropriate structure by using the function [`readMCoutput`](@ref MCSamplers.readMCoutput). The signature of this function is
+The full output can be read and saved in an appropriate structure by using the function [`readMCoutput`](@ref Samplers.readMCoutput). The signature of this function is
 ```julia
 readMCoutput(
     datadir::String,
@@ -151,16 +151,16 @@ The argument `datadir` specifies the directory in which the output is saved and 
 
 #### Interrupting and continuing simulations
 
-This package allows you to interrupt the simulation at any time by simply killing the Julia process. That should not create problems to the output files even in case of a crash of the program. The output files can then be used to continue (or re-start) the simulation from the point where it was interrupted by using the function [`contrunMC`](@ref MCSamplers.contrunMC). This function needs as the first argument a dictionary containing the generic simulation parameters (see above). Moreover, this function allows for a continuation using the same exact parameters used before or, by additionally passing a new instance of `AbstractMCParams` of the appropriate type (e.g., a [`HMCParams`](@ref MCSamplers.HMCParams) struct) to continue the previous simulation with new algorithm-specific parameters.
+This package allows you to interrupt the simulation at any time by simply killing the Julia process. That should not create problems to the output files even in case of a crash of the program. The output files can then be used to continue (or re-start) the simulation from the point where it was interrupted by using the function [`contrunMC`](@ref Samplers.contrunMC). This function needs as the first argument a dictionary containing the generic simulation parameters (see above). Moreover, this function allows for a continuation using the same exact parameters used before or, by additionally passing a new instance of `AbstractMCParams` of the appropriate type (e.g., a [`HMCParams`](@ref Samplers.HMCParams) struct) to continue the previous simulation with new algorithm-specific parameters.
 
 The output files are written using the Single Writer Multiple Reader (SWMR) capabilities of the HDF5 file format, so it is easy while the simulation is running to launch a different Julia instance and, from there, to plot or analyze the results so far. The SWMR will guarantee that only the initial process will the able to write to the file, while allowing others to read the data.
 
-Finally, in case the output file containing the saved models gets corrupted because of wrong HDF5 "status flags", the function  [`clear_stflags_hdf5`](@ref MCSamplers.clear_stflags_hdf5) provides a way to clear them and then continue the simulation using [`contrunMC`](@ref MCSamplers.contrunMC).
+Finally, in case the output file containing the saved models gets corrupted because of wrong HDF5 "status flags", the function  [`clear_stflags_hdf5`](@ref Samplers.clear_stflags_hdf5) provides a way to clear them and then continue the simulation using [`contrunMC`](@ref Samplers.contrunMC).
 
 
 ### Example 1: Sampling a 2D Gaussian with the "standard" HMC algorithm
 
-In the following we show a simple example of how to construct a custom problem and run [`MCSamplers`](@ref) to sample the target distribution. In this case we aim at sampling a simple 2D Gaussian probability density function (PDF), which corresponds to having a Gaussian likelihood function and a forward model which is simply the identity matrix. In other words, the forward model is given by
+In the following we show a simple example of how to construct a custom problem and run [`Samplers`](@ref) to sample the target distribution. In this case we aim at sampling a simple 2D Gaussian probability density function (PDF), which corresponds to having a Gaussian likelihood function and a forward model which is simply the identity matrix. In other words, the forward model is given by
 ```math
 \mathbf{G} = 
 \begin{bmatrix}
@@ -178,7 +178,7 @@ where ``\mathbf{m}`` are the model parameters (the unknowns) and ``\mathbf{d}`` 
 First we load some needed packages
 ```@example gauss1
 using LinearAlgebra
-using InverseAlgos.MCSamplers  # sampling algos
+using InverseAlgos.Samplers  # sampling algos
 using CairoMakie  # for plotting
 ```
 Then the problem to solve is defined by using a custom type (`struct`) named `GaussProb`:
@@ -214,7 +214,7 @@ function (gp::GaussProb)(x,kind)
    end
 end 
 ```
-An important thing here is that in order to use the above function with [`MCSamplers`](@ref) the signature of the function must be `(x::Vector{<:Real},kind::Symbol)` where `x` is a vector and kind is a `Symbol`. Moreover the *only* possible values for `kind` are either `:nlogpdf` which evaluates the negative logarithm of the likelihood functional or `:gradnlogpdf` which computes its gradient. 
+An important thing here is that in order to use the above function with [`Samplers`](@ref) the signature of the function must be `(x::Vector{<:Real},kind::Symbol)` where `x` is a vector and kind is a `Symbol`. Moreover the *only* possible values for `kind` are either `:nlogpdf` which evaluates the negative logarithm of the likelihood functional or `:gradnlogpdf` which computes its gradient. 
 
 Computing the value of the negative logarithm of the pdf and its gradient it is all that is needed for setting up a HMC inversion (except for additional tuning parameters). Computing the negative logarithm of the pdf essentially corresponds to evaluating the misfit functional.
 
@@ -246,7 +246,7 @@ constrained = false
 L = 10
 nothing # hide
 ```
-We thus set all the needed parameters for a "standard" HMC simulation, therefore we can instantiate the [`HMCParams`](@ref MCSamplers.HMCParams) structure
+We thus set all the needed parameters for a "standard" HMC simulation, therefore we can instantiate the [`HMCParams`](@ref Samplers.HMCParams) structure
 ```@example gauss1
 hmcpars = HMCParams(invmassM=imM,
                     LcholmassM=LchoM,
@@ -255,7 +255,7 @@ hmcpars = HMCParams(invmassM=imM,
                     L=L)
 nothing # hide
 ```
-The type of the above structure also defines the algorithm that will be used for sampling, i.e., [`HMCParams`](@ref MCSamplers.HMCParams) implies the use of the classic HMC algorithm, while, e.g., [`NUTSParams`](@ref MCSamplers.NUTSParams) implies the use of the NUTS algorithm.
+The type of the above structure also defines the algorithm that will be used for sampling, i.e., [`HMCParams`](@ref Samplers.HMCParams) implies the use of the classic HMC algorithm, while, e.g., [`NUTSParams`](@ref Samplers.NUTSParams) implies the use of the NUTS algorithm.
 
 Finally, we can set in a dictionary the general parameters about the simulation, i.e., the simulation name, the maximum number of iterations, the output directory, etc..
 ```@example gauss1
@@ -269,13 +269,13 @@ pars["stdout"] = "oneline" # hide
 nothing # hide
 ```
 
-We can now start the simulation using the generic function [`runMC`](@ref MCSamplers.runMC):
+We can now start the simulation using the generic function [`runMC`](@ref Samplers.runMC):
 ```@example gauss1
 pars["stdout"] = "oneline" # hide
 runMC(pars,hmcpars,mstart,likelihood=likelihood)
 ```
 
-We can load the full results of the simulation (using [`readMCoutput`](@ref MCSamplers.readMCoutput)), which will store the outputs in a structure of type [`MCSamplers.HMCOutput`](@ref MCSamplers.readMCoutput). See the documentation of [`MCSamplers.HMCOutput`](@ref MCSamplers.readMCoutput) for an exaplanation of the various fields.
+We can load the full results of the simulation (using [`readMCoutput`](@ref Samplers.readMCoutput)), which will store the outputs in a structure of type [`Samplers.HMCOutput`](@ref Samplers.readMCoutput). See the documentation of [`Samplers.HMCOutput`](@ref Samplers.readMCoutput) for an exaplanation of the various fields.
 ```@example gauss1
 outhmc = readMCoutput("results","gauss1")
 ```
@@ -308,7 +308,7 @@ fig
 Firstly, we repeat the same initial steps than above to set up the problem.
 ```@example gauss2
 using LinearAlgebra
-using InverseAlgos.MCSamplers  # sampling algos
+using InverseAlgos.Samplers  # sampling algos
 using CairoMakie  # for plotting
 
 struct GaussProb
@@ -346,7 +346,7 @@ likelihood = GaussProb(mea,invcov) # instantiate a GaussProb struct
 mstart = [0.0,-3.0]
 nothing # hide
 ```
-This time we intend to use the NUTS algorithm, so we start by defining the required parameters for the struct [`NUTSParams`](@ref MCSamplers.NUTSParams) as follows
+This time we intend to use the NUTS algorithm, so we start by defining the required parameters for the struct [`NUTSParams`](@ref Samplers.NUTSParams) as follows
 ```@example gauss2
 imM = Diagonal(1.0*I,length(mstart))  # inverse of the mass matrix
 LchoM = cholesky(inv(imM)).L          # lower triangular matrix from Cholesky decomposition of the mass matrix
@@ -358,7 +358,7 @@ niteradapt = 500                      # number of iterations for adaptation
 maxtreeheight = 4                     # maximum height of the balanced tree for NUTS
 nothing # hide
 ```
-See the documentation for [`NUTSParams`](@ref MCSamplers.NUTSParams) for more details. Now we instantiate a [`NUTSParams`](@ref MCSamplers.NUTSParams) structure:
+See the documentation for [`NUTSParams`](@ref Samplers.NUTSParams) for more details. Now we instantiate a [`NUTSParams`](@ref Samplers.NUTSParams) structure:
 ```@example gauss2
 hmcpars = NUTSParams(invmassM=imM,
                      LcholmassM=LchoM,
@@ -385,7 +385,7 @@ and then run the simulation using NUTS
 pars["stdout"] = "oneline" # hide
 runMC(pars,hmcpars,mstart,likelihood=likelihood)
 ```
-Load the full results using [`readMCoutput`](@ref MCSamplers.readMCoutput)
+Load the full results using [`readMCoutput`](@ref Samplers.readMCoutput)
 ```@example gauss2
 outhmc = readMCoutput("results","gauss2")
 ```
@@ -416,7 +416,7 @@ In this example we aim at sampling a 2D Gaussian using also a prior model with t
 First we load the needed packages
 ```@example gauss3
 using LinearAlgebra
-using InverseAlgos.MCSamplers  # sampling algos
+using InverseAlgos.Samplers  # sampling algos
 using CairoMakie  # for plotting
 ```
 We then setup the problem by creating two structures, one for the prior `GaussPrior` and one for the likelihood `GaussLikelihood`.
@@ -483,7 +483,7 @@ The starting model is set to
 ```@example gauss3
 mstart = [5.0,-3.0]
 ```
-Now, the structure [`ExtMetropParams`](@ref MCSamplers.ExtMetropParams) for the E-M algorithm need to be instantiated. In this case, such structure requires no parameters to be specified.
+Now, the structure [`ExtMetropParams`](@ref Samplers.ExtMetropParams) for the E-M algorithm need to be instantiated. In this case, such structure requires no parameters to be specified.
 ```@example gauss3
 mcpars = ExtMetropParams()
 ```
@@ -548,21 +548,21 @@ fig
 ## Public API
 
 ```@docs
-InverseAlgos.MCSamplers
-MCSamplers.runMC
-MCSamplers.contrunMC
-MCSamplers.HMCParams
-MCSamplers.NUTSParams
-MCSamplers.ExtMetropParams
-MCSamplers.clear_stflags_hdf5
-MCSamplers.readMCoutput
-MCSamplers.AvEpsFromHMCIter
-MCSamplers.AvEpsFromTree
+InverseAlgos.Samplers
+Samplers.runMC
+Samplers.contrunMC
+Samplers.HMCParams
+Samplers.NUTSParams
+Samplers.ExtMetropParams
+Samplers.clear_stflags_hdf5
+Samplers.readMCoutput
+Samplers.AvEpsFromHMCIter
+Samplers.AvEpsFromTree
 ```
 
 ## Reference, functions not exported
 ```@autodocs
-Modules = [InverseAlgos.MCSamplers]
+Modules = [InverseAlgos.Samplers]
 Public = false
 Private = true
 Order = [:type,:function]

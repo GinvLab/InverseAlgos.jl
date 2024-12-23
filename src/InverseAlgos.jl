@@ -1,9 +1,9 @@
 module InverseAlgos
 
 
-export MCSamplers,Optimizers,KronLinInv
+export Samplers,Optimizers,KronLinInv
 
-include("MCSamplers/MCSamplers.jl")
+include("Samplers/Samplers.jl")
 
 include("Optimizers/Optimizers.jl")
 

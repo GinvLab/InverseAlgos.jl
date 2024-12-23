@@ -49,7 +49,7 @@ Base.@kwdef struct HMCOutput
     "Unique identifier of the simulation"
     simulid::String
     "Struct containing all the parameters of the problem"
-    userprob::MCSamplers.NLogPostPDF
+    userprob::Samplers.NLogPostPDF
     "Struct containing all the parameters for the MC simulation"
     hmcparams::AbstractHMCParams
     "If running a synthetic test, this can hold the 'target' model."
@@ -194,7 +194,7 @@ Base.@kwdef struct ExtMetropOutput
     "Unique identifier of the simulation"
     simulid::String
     "Struct containing all the parameters of the problem"
-    userprob::MCSamplers.NLogPostPDF
+    userprob::Samplers.NLogPostPDF
     "Struct containing all the parameters for the MC simulation"
     mcparams::ExtMetropParams
     "If running a synthetic test, this can hold the 'target' model."

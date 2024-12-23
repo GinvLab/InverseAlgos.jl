@@ -517,13 +517,16 @@ function lmbfgs(fh!::Function,
         # end
         ##------------------------
 
-        ter = REPL.Terminals.TTYTerminal("", stdin, stdout, stderr)
-        REPL.Terminals.clear_line(ter)
-        #@info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
-        @info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
-        REPL.Terminals.cmove_line_up(ter)
-        flush(stdout)
-        sleep(2)
+        min_log_level_acc = Logging.min_enabled_level(current_logger())
+        if min_log_level_acc <= LogLevel(Info)
+            ter = REPL.Terminals.TTYTerminal("", stdin, stdout, stderr)
+            if k>1
+                REPL.Terminals.cmove_line_up(ter)
+            end
+            REPL.Terminals.clear_line(ter)
+            @info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
+            flush(stdout)
+        end
         ##------------------------
         # update the solution x
         x[k+1] .= x[k] .+ α.*p
@@ -546,8 +549,8 @@ function lmbfgs(fh!::Function,
 
         # if the solution does not change with the update...
         if all(snew.==0.0)
+            #println()
             @info "\n*** all(x[k+1].-x[k])==0.0, aborting ***"
-            println()
             return x[1:k+1],misf[1:k+1] 
         end
 
@@ -564,13 +567,14 @@ function lmbfgs(fh!::Function,
         ## check norm of the gradient
         gnorm = norm(gradf_k)
         if abs(gnorm/g0norm) < τgrad
+            #println()
             # println("gnorm is "*string(gnorm)*" and g0norm is "*string(g0norm))
             @info "\n***  norm(gradf) < τgrad, breaking iterations ***"
             return x[1:k+1],misf[1:k+1]
         end
     end
 
-    #println("\n")
+    #println()
     return x[1:maxiter+1],misf[1:maxiter+1]
 end
 
