@@ -90,40 +90,6 @@ end
 
 #######################################################################
 
-function cubint(a::Real, b::Real, phia::Real, phib::Real, ga::Real, gb::Real)
-    if a==b
-        alpha = a
-    else
-        d1 = ga + gb -3*(phia - phib)/(a - b)
-   
-        d2 = sqrt( (d1^2) - ga*gb )
-
-        alpha = b - (b - a)*(( gb + d2 - d1 )/( gb - ga + 2*d2))
-    end
-    return alpha
-end
-
-################################################
-
-function project_model_and_1Dgrad!(x,p,bounds)
-
-    p_bound = copy(p)
-
-    bot_ind = x .< bounds[:,1]
-    top_ind = x .> bounds[:,2]
-
-    x[bot_ind] .= bounds[bot_ind,1]
-    p_bound[bot_ind] .= 0
-
-    x[top_ind] .= bounds[top_ind,2]
-    p_bound[top_ind] .= 0
-
-    return p_bound 
-end
-
-
-################################################
-
 function twoloops(xk::Vector,g::Vector,H0::UniformScaling,ρ::Vector{Float64},
                   s::Vector{Vector{Float64}},
                   y::Vector{Vector{Float64}},Nmem::Integer)
@@ -155,163 +121,8 @@ function twoloops(xk::Vector,g::Vector,H0::UniformScaling,ρ::Vector{Float64},
     return Hgradf
 end
 
-################################################
-
-# Line Search
-# using Wolfe conditions
-# see section 3.5 of Nocedal & Wright, 2006 (page 60)
-
-function linesearchWolfe!(fh!::Function,x0αp::Vector{Float64},ϕ0::Float64,
-                          g::Vector{Float64},x0::Vector,p::Vector{Float64} ;
-                          bounds::Union{Nothing,Array{Float64,2}},
-                          α0::Real=1.0,maxiterwolfe::Integer=10, maxiterzoom::Integer=10,
-                          c1::Real = 0.0001, c2::Real = 0.9)
-
-    # see section 3.5 of Nocedal & Wright, 2006 (page 60)
-    ## algo 3.5 of Nocedal & Wright, 2006
-
-    αold = 0.0
-    @assert 0.0<=α0
-
-    @assert 0.0<c1<c2<1.0
-   
-    dϕdα_0 = dot(g,p)
-    dϕdαold = dϕdα_0
-
-    ϕold = ϕ0
-    # x0αp = similar(x0)
-
-    α = α0
-    ϕ = 0.0 # to allow to return it
-    for i=1:maxiterwolfe
-
-        x0αp .= x0 .+ α.*p
-        if bounds!=nothing
-            p_bound = project_model_and_1Dgrad!(x0αp,p,bounds)            
-            ϕ = fh!(g, x0αp ) #x0αp)
-            # grad with respect to α
-            dϕdα = dot(g,p_bound)
-        else
-            ϕ = fh!(g, x0αp ) #x0αp)
-            # grad with respect to α
-            dϕdα = dot(g,p)
-        end
-
-        ## Wolfe 1 check
-        if ϕ>(ϕ0+c1*α0*dϕdα_0) || (ϕ>=ϕold && i>1 )
-            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,
-                                      ϕ0,dϕdα_0,
-                                      αold,α,
-                                      ϕold,ϕ,
-                                      dϕdαold,dϕdα,
-                                      bounds=bounds,
-                                      maxiter=maxiterzoom)
-            return αout,ϕout,success # ϕ was calculated with αout
-        end
-
-        ## Wolfe 2 check
-        if abs(dϕdα) <= -c2*dϕdα_0
-            αout = α
-            success = true
-            return αout,ϕ,success # ϕ was calculated with α0
-        end
-
-        ## Overshoot, zoom
-        if dϕdα >= 0.0
-            αout,ϕout,success = zoom!(g,x0αp,x0,p,c1,c2,fh!,
-                                      ϕ0,dϕdα_0,
-                                      α,αold, # swapped w.r.t. Wolfe check 1
-                                      ϕ,ϕold, # swapped w.r.t. Wolfe check 1
-                                      dϕdα,dϕdαold, # swapped w.r.t. Wolfe check 1
-                                      bounds=bounds,
-                                      maxiter=maxiterzoom)
-            return αout,ϕout,success # ϕ was calculated with αout
-        end
-
-        # update α old and new
-        αold = α
-        ##  α[i]<=α0<=αmax
-        grat = dϕdα_0/(dϕdα_0-dϕdα)
-        if grat > 1
-            α = grat*αold #Estimate as desired change in gradient over actual change
-        else
-            α = 2*αold #Don't do the above when it doesn't result in a step increase
-        end
-        # update ϕold
-        ϕold = ϕ
-        dϕdαold = dϕdα
-
-    end
-
-    # line search failed
-    success = false
-    return αold,ϕ,success # which is the last
-end
-
-#######################################################################
-
-function zoom!(g_full::Vector,x0αp::Vector{Float64},
-               x0::Vector{<:Real},
-               p::Vector{<:Real},
-               c1::Real,c2::Real,fh!::Function,
-               ϕ0::Real,dϕdα_0::Real,
-               αlo::Real,αhi::Real,ϕlo::Real,ϕhi::Real,
-               glo::Real,ghi::Real;
-               bounds::Union{Nothing,Array{Float64,2}}=nothing,
-               maxiter::Integer=10)
-    ## algo 3.6 of Nocedal & Wright, 2006
-    
-    α = 0.0 # to allow returning it outside the for loop
-    ϕtrial = 0.0 # to allow returning it outside the for loop
-    #x0αp = similar(x0)
-
-    for i=1:maxiter
-
-        if αlo < αhi
-            α = cubint(αlo,αhi,ϕlo,ϕhi,glo,ghi)
-        elseif αlo == αhi
-            α = αlo
-        else
-            α = cubint(αhi,αlo,ϕhi,ϕlo,ghi,glo)
-        end
-
-        x0αp .= x0 .+ α.*p        
-        if bounds!=nothing
-            p_bound = project_model_and_1Dgrad!(x0αp,p,bounds)
-            ϕtrial = fh!(g_full, x0αp) 
-            gtrial = dot(g_full,p_bound)
-        else
-            ϕtrial = fh!(g_full, x0αp) 
-            gtrial = dot(g_full,p)
-        end
-        
-        if (ϕtrial > ϕ0.+c1*α*dϕdα_0) || (ϕtrial>=ϕlo)
-            αhi = α
-
-        else
-            if abs(gtrial) <= -c2*dϕdα_0
-                αout = α
-                success = true
-                return αout,ϕtrial,success # ϕtrial was calculated with αtrial
-            end
-
-            if gtrial*(αhi-αlo) >= 0.0
-                αhi = αlo
-            end
-
-            αlo = α
-            ϕlo = ϕtrial
-        end
-
-    end
-
-    # line search failed
-    success = false
-    return α,ϕtrial,success
-end
 
 #########################################################
-
 
 """
   $(TYPEDSIGNATURES)
@@ -357,7 +168,7 @@ end
 An implementation of the L-BFGS algorithm following Nocedal & Wright, 2006 with the addition of box constraints.
 
 # Arguments
-- `fh!`: a function returning the misfit to be minimized and computing its gradient in place (a ::Function)
+- `fh!`: a function (::Function) returning the misfit to be minimized and computing its gradient in place, e.g., misf=fh!(grad,x)
 - `x0`: the starting model/initial guess
 - `mem`: the length (number of iterations) used for memory variables
 - `maxiter`: maximum number of iterations
@@ -478,13 +289,8 @@ function lmbfgs(fh!::Function,
 
         # compute initial step length based on prior knowledge
         if k==1
-            # # first iteration only
-            # if target_update == 0
-            #     α0 = 0.1*ϕ0/(sum(p.^2)) # Assuming minimum objective is 0, tries to take a step 10% of the way there
-            # else
-            #     # α0 = target_update / sqrt(sum(p.^2))
-                α0 = target_update
-            # end 
+            # first iteration only
+            α0 = target_update
         else
             α0 = 1
         end
@@ -527,12 +333,17 @@ function lmbfgs(fh!::Function,
             @info "Iteration $k of $maxiter, misfit: $(misf[k+1])         "
             flush(stdout)
         end
-        ##------------------------
+        
+        ##===============================
         # update the solution x
         x[k+1] .= x[k] .+ α.*p
         if bounds!=nothing
             # project x[k+1]
-            project_model_and_1Dgrad!(x[k+1],p,bounds)
+            bot_ind = x[k+1] .< bounds[:,1]
+            top_ind = x[k+1] .> bounds[:,2]
+            x[k+1][bot_ind] .= bounds[bot_ind,1]
+            x[k+1][top_ind] .= bounds[top_ind,2]
+            ## project_model_and_1Dgrad!(x[k+1],p,bounds)
         end
         
         ##------------------------
@@ -578,48 +389,5 @@ function lmbfgs(fh!::Function,
     return x[1:maxiter+1],misf[1:maxiter+1]
 end
 
-
-#############################################################################
-
-function savestuff!(outfile::String,overwriteoutput::Bool,k::Integer,misfnew::Real,xnew::Vector{<:Real})
-
-    nmpar = length(xnew)
-
-    if k==0
-
-        if overwriteoutput==true
-            fid_h5 = h5open(outfile,"w") #,swmr=true)
-        else
-            fid_h5 = h5open(outfile,"cw") #,swmr=true)
-        end
-        misf_h5 = HDF5.create_dataset(fid_h5, "misfit", Float64, ((1,), (-1,)),chunk=(100,)  )
-        mods_h5 = HDF5.create_dataset(fid_h5, "mods", Float64, ((nmpar,1), (nmpar,-1)),chunk=(nmpar,1) )
-
-        HDF5.set_extent_dims(misf_h5,(k+1,))
-        misf_h5[k+1] = misfnew
-
-        HDF5.set_extent_dims(mods_h5,(nmpar,k+1))
-        mods_h5[:,k+1] = xnew
-
-        close(fid_h5)
-
-    else
-
-        fid_h5 = h5open(outfile,"r+")
-
-        misf_h5 = HDF5.open_dataset(fid_h5,"misfit")
-        HDF5.set_extent_dims(misf_h5,(k+1,))
-        misf_h5[k+1] = misfnew
-
-        mods_h5 = HDF5.open_dataset(fid_h5,"mods")
-        HDF5.set_extent_dims(mods_h5,(nmpar,k+1))
-        mods_h5[:,k+1] = xnew
-
-        close(fid_h5)
-
-    end
-
-    return
-end
 
 #############################################################################

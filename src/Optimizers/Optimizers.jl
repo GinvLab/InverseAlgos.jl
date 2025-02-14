@@ -16,10 +16,16 @@ using DocStringExtensions
 using REPL
 using Logging
 
-## L-BFGS algo
-export lmbfgs
+
+export lmbfgs,gaussnewton
+
+# Line-search algos
+include("Line_search/line_search_algos.jl")
+# L-BFGS algo
 include("BFGS/lim-mem_bfgs.jl")
-
-
+# Gauss-Newton algo
+include("GaussNewton/gauss_newton.jl")
+# Save output
+include("saveoutput.jl")
 
 end # module

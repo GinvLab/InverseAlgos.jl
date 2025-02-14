@@ -8,12 +8,14 @@ Read the full output of a Monte Carlo simulation and return it in an
 """
 function readMCoutput(datadir::String,simname::String ;
                       istart::Integer=1,iend::Integer=0)
-  
+    
     flname_jld2 = joinpath(datadir,simname*"_inp.jld2")
     fjd = JLD2.jldopen(flname_jld2, "r") 
     mcparams = fjd["mcparams"]
     close(fjd)
-    
+
+    @show typeof(mcparams)
+
     if typeof(mcparams)<:AbstractHMCParams
         mcout = readHMCoutputH5(datadir,simname; istart=istart,iend=iend)
 
@@ -22,6 +24,9 @@ function readMCoutput(datadir::String,simname::String ;
         if mcparams.algo==:ExtMetrop
             mcout = readExtMetropoutputH5(datadir,simname; istart=istart,iend=iend)
         end
+
+    else
+        error("readMCoutput(): wrong typeof(mcparams). Aborting.")
 
     end
     
