@@ -241,7 +241,7 @@ function lmbfgs(fh!::Function,
     # pre-allocate stuff
     snew = similar(x0)
     ynew = similar(x0)
-    x0αp = similar(x0)
+    xcur = similar(x0)
     gradf_old = similar(gradf_k)
 
 
@@ -292,13 +292,13 @@ function lmbfgs(fh!::Function,
             # first iteration only
             α0 = target_update
         else
-            α0 = 1
+            α0 = 1.0
         end
 
         ## line search, Wolfe condition
         gradf_old .= gradf_k
         
-        α,misf[k+1],success = linesearchWolfe!(fh!,x0αp,ϕ0,gradf_k,x[k],p,
+        α,misf[k+1],success = linesearchWolfe!(fh!,xcur,ϕ0,gradf_k,x[k],p,
                                                bounds=bounds,
                                                α0=α0,maxiterwolfe=maxiterwolfe,
                                                maxiterzoom=maxiterzoom,
@@ -310,7 +310,7 @@ function lmbfgs(fh!::Function,
             # p = - γ .* gradf_k
             # Nmemk = 0 # Wipe history for ρ, s and y!
             
-            # α,misf[k+1],success = linesearchWolfe!(fh!,x0αp,ϕ0,gradf_k,x[k],p,
+            # α,misf[k+1],success = linesearchWolfe!(fh!,xcur,ϕ0,gradf_k,x[k],p,
             #                                        bounds=bounds,
             #                                        α0=α0,maxiterwolfe=maxiterwolfe,
             #                                        maxiterzoom=maxiterzoom,
@@ -336,7 +336,8 @@ function lmbfgs(fh!::Function,
         
         ##===============================
         # update the solution x
-        x[k+1] .= x[k] .+ α.*p
+        x[k+1] .= xcur #x[k] .+ α.*p
+
         if bounds!=nothing
             # project x[k+1]
             bot_ind = x[k+1] .< bounds[:,1]
