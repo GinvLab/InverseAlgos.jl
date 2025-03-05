@@ -8,7 +8,7 @@ Docs:
 > [!WARNING]
 > **Work in progress!**
 
-Probabilistic and deterministic inverse algorithms for geophysical problems and beyond.
+Probabilistic and deterministic inverse algorithms for geophysical problems and beyond. This package can be used in combination with the other packages addressing geophysical problems as part of [G⁻¹Lab](https://github.com/GinvLab).
  
 `InverseAlgos` is an unbrella package currently including three sub-modules:
 - `Samplers`: (Hamiltonian) Monte Carlo sampling algorithms (formerly part of HMCLab)
@@ -16,7 +16,7 @@ Probabilistic and deterministic inverse algorithms for geophysical problems and 
 - `KronLinInv`: Kronecker-product-based least squares inversion under Gaussian and separability assumptions
 
 
-See
+See the following publications:
 
 * Andrea Zunino, Lars Gebraad, Alessandro Ghirotto, Andreas Fichtner (2023), **HMCLab: a framework for solving diverse geophysical inverse problems using the Hamiltonian Monte Carlo method**, Geophysical Journal International, Volume 235, Issue 3, Pages 2979–2991, [https://doi.org/10.1093/gji/ggad403](https://doi.org/10.1093/gji/ggad403)
 
