@@ -128,6 +128,7 @@ end
   $(TYPEDSIGNATURES)
 
 An implementation of the L-BFGS algorithm following Nocedal & Wright, 2006 with the addition of box constraints.
+This method accepts separate functions for computing the objective function and its gradient as input.
 
 # Arguments
 - `f`: a function returning the misfit (a ::Function)
@@ -150,7 +151,9 @@ An implementation of the L-BFGS algorithm following Nocedal & Wright, 2006 with 
 - `misf`: a vector containing the misfit value for each iteration
 
 """
-function lmbfgs(f::Function,∇f::Function, args... )
+function lmbfgs(f::Function,
+                ∇f::Function,
+                args... )
 
     function fh!(grad,x)
         grad .= ∇f(x)
@@ -166,6 +169,7 @@ end
   $(TYPEDSIGNATURES)
 
 An implementation of the L-BFGS algorithm following Nocedal & Wright, 2006 with the addition of box constraints.
+This method takes a single function for computing the objective function and its gradient as input.
 
 # Arguments
 - `fh!`: a function (::Function) returning the misfit to be minimized and computing its gradient in place, e.g., misf=fh!(grad,x)

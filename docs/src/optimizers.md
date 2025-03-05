@@ -12,4 +12,5 @@ Currently the L-BFGS algorithm is implemented, including box constraints (option
 ```@docs
 InverseAlgos.Optimizers
 Optimizers.lmbfgs
+Optimizers.gaussnewton
 ```
