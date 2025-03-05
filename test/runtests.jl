@@ -27,6 +27,18 @@ with_logger(logger) do
         @test test_bfgs2()
 
     end
+
+    @testset "Test Gauss-Newton algo" begin
+
+        printstyled("Gauss-Newton: Test 1\n", bold=true,color=:cyan)
+        @test test_gaussnewton1()
+        
+        printstyled("Gauss-Newton: Test 2\n", bold=true,color=:cyan)
+        @test test_gaussnewton2()
+
+        printstyled("Gauss-Newton: Test 3\n", bold=true,color=:cyan)
+        @test test_gaussnewton3()
+    end
 end
 
 
@@ -34,10 +46,10 @@ end
 @testset "Test KronLinInv" begin
 
     printstyled("KronLinInv: Testing 2D example \n", bold=true,color=:cyan)
-    @test test2D()
+    @test test_KLI2D()
 
     printstyled("KronLinInv: Testing 3D example \n", bold=true,color=:cyan)
-    @test test3D()
+    @test test_KLI3D()
 
     println()
 end

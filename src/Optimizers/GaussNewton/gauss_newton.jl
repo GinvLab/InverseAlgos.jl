@@ -57,6 +57,8 @@ function gaussnewton(calcfwd!::Function,
     end
     @assert length(xprior)==length(x0)
 
+    @info "\n*** Gauss-Newton optimization  *** "
+
     ## init
     N = size(invCd,1)
     M = length(x0)
@@ -92,8 +94,8 @@ function gaussnewton(calcfwd!::Function,
         res_m .= xcur - xprior
         objval += 0.5 * dot(res_m,invCm,res_m)
         ##=======================
-        #    Gradient
-        # Jtres = J*res, i.e., the gradient
+        #   Gradient
+        #  grad = J^T * Cd^-1 * res_d + Cm^-1 * res_m
         mul!(tmpgr_d,invCd,res_d)
         mul!(grad,transpose(jac),tmpgr_d)
         mul!(tmpgr_m,invCm,res_m)
@@ -116,14 +118,15 @@ function gaussnewton(calcfwd!::Function,
     #   and get the in-place jacobian as an optional argument
     misf[1] = fh!(grad,x[1])
     g0norm = norm(grad)
-    
+
+    @info "Initial misfit $(misf[1])     "
     ## Loop
     for k=1:maxiter
      
         ##===============================
         # Jacobian
         calcjac!(jac,x[k])
-        # Now (J^T*invCd*J + invCm) p_gn = - (J^T*invCm) *res
+        # Now (J^T*invCd*J + invCm) p_gn = - (J^T*invCd) *res
         # invCd * J
         mul!(invCd_J,invCd,jac)
         # temporary store invCm in the Hessian array
@@ -132,13 +135,15 @@ function gaussnewton(calcfwd!::Function,
         #  J^T * invCd * J + invCm
         mul!(H,transpose(jac),invCd_J,1.0,1.0)
         # solve linear system
-        faJtJ = factorize(Symmetric(H))
-        # J^t*J*p_gn = -J^t*res
-        #  pkgn is the descent direction
+        #faJtJ = factorize(Symmetric(H)) # this seems to get singular...
+        faJtJ = lu(H) 
+        ## (J^T*invCd*J + invCm) p_gn = - (J^T*invCd) *res
+        ##  pkgn is the descent direction
         ldiv!(pkgn,faJtJ,-grad)
+        ##===============================
 
         ##===============================
-        # Line search
+        ## Line search
         if k==1
             α0 = target_update
         else
@@ -150,10 +155,10 @@ function gaussnewton(calcfwd!::Function,
                                                α0=α0,maxiterwolfe=maxiterwolfe,
                                                maxiterzoom=maxiterzoom,
                                                c1=c1,c2=c2)
-
-        ##===============================
         # Update the solution
-        x[k+1] .= x0αp #x[k] .+ α.*pkgn
+        x[k+1] .= x0αp   ###x[k] .+ α.*pkgn
+        ##===============================
+
 
         if bounds!=nothing
             # project x[k+1]

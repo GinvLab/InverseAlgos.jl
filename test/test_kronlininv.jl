@@ -3,7 +3,7 @@
 
 ###############################################
 
-function test2D( )
+function test_KLI2D( )
 
     ## 2D problem, so set nx = 1
     nx = 1
@@ -26,7 +26,7 @@ end
 
 #########################################
 
-function test3D( )
+function test_KLI3D( )
 
     ## 2D problem, so set nx = 1
     nx = 8
