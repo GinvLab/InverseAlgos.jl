@@ -40,7 +40,7 @@ function gaussnewton(calcfwd!::Function,
                      target_update::T=1.0,
                      bounds::Union{Nothing,Array{Float64,2}}=nothing,
                      outfile::String="results_gaussnewton.h5",
-                     τgrad::T=1e-8,
+                     τgrad::T=eps(),
                      overwriteoutput::Bool=false,
                      maxiterwolfe::Integer=10,
                      maxiterzoom::Integer=10,
@@ -135,10 +135,15 @@ function gaussnewton(calcfwd!::Function,
         #  J^T * invCd * J + invCm
         mul!(H,transpose(jac),invCd_J,1.0,1.0)
         # solve linear system
-        #faJtJ = factorize(Symmetric(H)) # this seems to get singular...
-        @show H
-        faH = lu(H)
-        @show faH
+        #@show H
+        if rank(H)<size(H,1)
+            @warn "Approximation of the Hessian is not full rank"
+        end
+        #faH = lu(H)
+        #faH = bunchkaufman(H)
+        #faH = qr(H)
+        faH = factorize(H)
+        #@show faH
         # ## (J^T*invCd*J + invCm) p_gn = - (J^T*invCd) *res
         # ##  pkgn is the descent direction
         ldiv!(pkgn,faH,-grad)

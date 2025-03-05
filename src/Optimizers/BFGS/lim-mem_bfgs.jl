@@ -188,19 +188,19 @@ An implementation of the L-BFGS algorithm following Nocedal & Wright, 2006 with 
  
 """
 function lmbfgs(fh!::Function,
-                x0::Vector{<:Real};
+                x0::Vector{<:T};
                 bounds::Union{Nothing,Array{Float64,2}}=nothing,
                 mem::Integer,
                 maxiter::Integer,
-                target_update::Real=1.0,
+                target_update::T=1.0,
                 outfile::String="results_lbgfs.h5",
-                τgrad::Real=1e-8,
+                τgrad::T=eps(),
                 overwriteoutput::Bool=false,
                 maxiterwolfe::Integer=10,
                 maxiterzoom::Integer=10,
-                c1::Real=0.0001,
-                c2::Real=0.9,
-                saveres::Bool=true)
+                c1::T=0.0001,
+                c2::T=0.9,
+                saveres::Bool=true) where T<:Real
     ##
     if bounds==nothing
         @info "\n***  L-BFGS optimization (unconstrained) ***\n"

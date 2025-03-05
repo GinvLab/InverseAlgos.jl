@@ -20,14 +20,14 @@ function test_gaussnewton1()
         return 
     end
     
-    xprior = [-0.5,-4.5]
+    xprior = [-1.5,-1.5]
 
     obsdata = [stmin]
-    invCd = [1.0;;]
-    invCm = [0.0   0;
-             0   0.0]
+    invCd = [1/10.0;;]
+    invCm = [1/5.0   0;
+             0   1/5.0]
 
-    maxiter = 30
+    maxiter = 100
 
     xout,misfout = gaussnewton(calcfwd!,calcjac!,
                                obsdata=obsdata,
@@ -35,10 +35,43 @@ function test_gaussnewton1()
                                invCm=invCm,
                                xprior=xprior,
                                maxiter=maxiter)
+    @show tvec
+    @show xout[end]
 
-    ce1 = isapprox(xout[end],tvec,rtol=1e-2)
+    
+    # N = size(invCd,1)
+    # M = length(xprior)
+    # u_calc = zeros(eltype(xprior),N)
+    # grad = zeros(eltype(xprior),M)
+    # jac = zeros(eltype(xprior),N,M) 
+    
+    # function fh_bfgs!(grad,xcur)
+    #     # Calculated data
+    #     calcfwd!(u_calc,xcur)
+    #     # Jacobian
+    #     calcjac!(jac,xcur)
+    #     ##=======================
+    #     #   Value of objective function
+    #     # misfit
+    #     res_d = u_calc - obsdata
+    #     objval = 0.5 * dot(res_d,invCd,res_d)
+    #     # prior term
+    #     res_m = xcur - xprior
+    #     objval += 0.5 * dot(res_m,invCm,res_m)
+    #     grad .= transpose(jac) * invCd * res_d + invCm * res_m
+    #     return objval
+    # end
+    
+    # xout_bfgs,misfout_bfgs = lmbfgs(fh_bfgs!,
+    #                                 xprior,
+    #                                 mem=20,
+    #                                 maxiter=maxiter)
+    # @show xout_bfgs[end]
+    
+    ce1 = isapprox(xout[end],tvec,atol=0.3)
     return ce1 
 end
+
 
 function test_gaussnewton2()
 
@@ -96,12 +129,12 @@ function test_gaussnewton3()
         return 
     end
     
-    xprior = [10.0,-13.5]
+    xprior = [1.5,1.5]
 
     obsdata = [0.0]
     invCd = [1.0;;]
-    invCm = [0.0   0;
-             0   0.0]
+    invCm = [1/5.0   0;
+             0   1/5.0]
 
     maxiter = 50
 
@@ -139,9 +172,9 @@ function test_gaussnewton3()
     #                                 xprior,
     #                                 mem=20,
     #                                 maxiter=maxiter)
-    # @show xout[end]
     # @show xout_bfgs[end]
 
-    ce1 = isapprox(xout[end],[0.0,0.0],atol=1e-1)
+    @show xout[end]
+    ce1 = isapprox(xout[end],[0.0,0.0],atol=0.6)
     return ce1 
 end

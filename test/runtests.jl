@@ -27,18 +27,18 @@ with_logger(logger) do
         @test test_bfgs2()
 
     end
+end
 
-    @testset "Test Gauss-Newton algo" begin
+@testset "Test Gauss-Newton algo" begin
 
-        printstyled("Gauss-Newton: Test 1\n", bold=true,color=:cyan)
-        @test test_gaussnewton1()
-        
-        printstyled("Gauss-Newton: Test 2\n", bold=true,color=:cyan)
-        @test test_gaussnewton2()
+    printstyled("Gauss-Newton: Test 1\n", bold=true,color=:cyan)
+    @test test_gaussnewton1()
+    
+    printstyled("Gauss-Newton: Test 2\n", bold=true,color=:cyan)
+    @test test_gaussnewton2()
 
-        printstyled("Gauss-Newton: Test 3\n", bold=true,color=:cyan)
-        @test test_gaussnewton3()
-    end
+    printstyled("Gauss-Newton: Test 3\n", bold=true,color=:cyan)
+    @test test_gaussnewton3()
 end
 
 
