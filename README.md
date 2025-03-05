@@ -3,7 +3,7 @@
 Docs: 
 [![Docs Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://ginvlab.github.io/InverseAlgos.jl/stable)
 [![Docs Latest](https://img.shields.io/badge/docs-latest-blue.svg)](https://ginvlab.github.io/InverseAlgos.jl/dev)
-[![Documentation](https://github.com/GinvLab/InverseAlgos.jl/actions/workflows/Documentation.yml/badge.svg)](https://github.com/GinvLab/InverseAlgos.jl/actions/workflows/Documentation.yml)
+[![Documentation](https://github.com/GinvLab/InverseAlgos.jl/actions/workflows/documentation.yml/badge.svg)](https://github.com/GinvLab/InverseAlgos.jl/actions/workflows/documentation.yml)
 
 > [!WARNING]
 > **Work in progress!**
