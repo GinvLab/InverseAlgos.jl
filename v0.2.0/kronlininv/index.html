@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>KronLinInv · InverseAlgos.jl</title><meta name="title" content="KronLinInv · InverseAlgos.jl"/><meta property="og:title" content="KronLinInv · InverseAlgos.jl"/><meta property="twitter:title" content="KronLinInv · InverseAlgos.jl"/><meta name="description" content="Documentation for InverseAlgos.jl."/><meta property="og:description" content="Documentation for InverseAlgos.jl."/><meta property="twitter:description" content="Documentation for InverseAlgos.jl."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">InverseAlgos.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../samplers/">Samplers</a></li><li><a class="tocitem" href="../optimizers/">Optimizers</a></li><li class="is-active"><a class="tocitem" href>KronLinInv</a><ul class="internal"><li><a class="tocitem" href="#Quick-overview"><span>Quick overview</span></a></li><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Theoretical-background"><span>Theoretical background</span></a></li><li><a class="tocitem" href="#Usage-examples"><span>Usage examples</span></a></li><li><a class="tocitem" href="#twodexample"><span>2D example</span></a></li><li><a class="tocitem" href="#threedexample"><span>3D example</span></a></li><li><a class="tocitem" href="#Public-API"><span>Public API</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>KronLinInv</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>KronLinInv</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/GinvLab/InverseAlgos.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/GinvLab/InverseAlgos.jl/blob/main/docs/src/kronlininv.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="KronLinInv"><a class="docs-heading-anchor" href="#KronLinInv">KronLinInv</a><a id="KronLinInv-1"></a><a class="docs-heading-anchor-permalink" href="#KronLinInv" title="Permalink"></a></h1><ul><li><a href="../#InverseAlgos_header">InverseAlgos</a></li><li class="no-marker"><ul><li><a href="../#Overview">Overview</a></li><li><a href="../#Installation">Installation</a></li></ul></li></ul><h2 id="Quick-overview"><a class="docs-heading-anchor" href="#Quick-overview">Quick overview</a><a id="Quick-overview-1"></a><a class="docs-heading-anchor-permalink" href="#Quick-overview" title="Permalink"></a></h2><p>Kronecker-product-based linear inversion of geophysical (or other kinds of) data under Gaussian and separability assumptions. The code computes the posterior mean model and the posterior covariance matrix (or subsets of it) in an efficient manner (parallel algorithm) taking into account 3-D correlations both in the model parameters and in the observed data.</p><p>If you use this code for research or else, please cite the related paper: </p><p>Andrea Zunino, Klaus Mosegaard (2019), <strong>An efficient method to solve large linearizable inverse problems under Gaussian and separability assumptions</strong>, <em>Computers &amp; Geosciences</em>. ISSN 0098-3004, <a href="https://doi.org/10.1016/j.cageo.2018.09.005">https://doi.org/10.1016/j.cageo.2018.09.005</a>.</p><p>See the above mentioned paper for a detailed description.</p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><p>To install the package simple enter into the package manager mode in Julia by typing &quot;<code>]</code>&quot; at the REPL prompt and then use <code>add</code>, i.e.,</p><pre><code class="nohighlight hljs">(v1.2) pkg&gt; add KronLinInv</code></pre><p>The package will be automatically downloaded from the web and installed.</p><h2 id="Theoretical-background"><a class="docs-heading-anchor" href="#Theoretical-background">Theoretical background</a><a id="Theoretical-background-1"></a><a class="docs-heading-anchor-permalink" href="#Theoretical-background" title="Permalink"></a></h2><p>KronLinInv solves the <em>linear inverse problem</em> with Gaussian uncertainties represented by the following objective function</p><p class="math-container">\[S( \mathbf{m}) = \frac{1}{2} ( \mathbf{G} \mathbf{m} - \mathbf{d}_{\sf{obs}} )^{\sf{T}} \mathbf{C}^{-1}_{\rm{D}} ( \mathbf{G} \mathbf{m} - \mathbf{d}_{\sf{obs}} ) + \frac{1}{2} ( \mathbf{m} - \mathbf{m}_{\sf{prior}} )^{\sf{T}} \mathbf{C}^{-1}_{\rm{M}} ( \mathbf{m} - \mathbf{m}_{\sf{prior}} )\]</p><p>under the following separability conditions (for a 3-way decomposition):</p><p class="math-container">\[\mathbf{C}_{\rm{M}} = \mathbf{C}_{\rm{M}}^{\rm{x}} \otimes 
+\mathbf{C}_{\rm{M}}^{\rm{y}} \otimes \mathbf{C}_{\rm{M}}^{\rm{z}} 
+, \quad
+\mathbf{C}_{\rm{D}} = \mathbf{C}_{\rm{D}}^{\rm{x}} \otimes 
+\mathbf{C}_{\rm{D}}^{\rm{y}} \otimes \mathbf{C}_{\rm{D}}^{\rm{z}} 
+
+\quad \textrm{ and } \quad
+
+\mathbf{G} = \mathbf{G}^{\rm{x}} \otimes \mathbf{G}^{\rm{y}} \otimes \mathbf{G}^{\rm{z}} \, .\]</p><p>From the above, the posterior covariance matrix is given by </p><p class="math-container">\[ \mathbf{\widetilde{C}}_{\rm{M}} =  \left( \mathbf{G}^{\sf{T}} \,
+\mathbf{C}^{-1}_{\rm{D}} \, \mathbf{G} + \mathbf{C}^{-1}_{\rm{M}} \right)^{-1}\]</p><p>and the center of posterior gaussian is </p><p class="math-container">\[ \mathbf{\widetilde{m}}  
+ = \mathbf{m}_{\rm{prior}}+ \mathbf{\widetilde{C}}_{\rm{M}} \, \mathbf{G}^{\sf{T}} \, \mathbf{C}^{-1}_{\rm{D}} \left(\mathbf{d}_{\rm{obs}} - \mathbf{G} \mathbf{m}_{\rm{prior}} \right) \, .\]</p><p>KronLinInv solves the inverse problem in an efficient manner, with a very low memory imprint, suitable for large problems where many model parameters and observations are involved.</p><p>The paper describes how to obtain the solution to the above problem as shown hereafter. First the following matrices are computed</p><p class="math-container">\[ \mathbf{U}_1 \mathbf{\Lambda}_1  \mathbf{U}_1^{-1}  
+ = \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}}
+(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} \mathbf{G}^{\rm{x}}\]</p><p class="math-container">\[\mathbf{U}_2 \mathbf{\Lambda}_2  \mathbf{U}_2^{-1}
+=  \mathbf{C}_{\rm{M}}^{\rm{y}} (\mathbf{G}^{\rm{y}})^{\sf{T}}
+(\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1} \mathbf{G}^{\rm{y}}\]</p><p class="math-container">\[\mathbf{U}_3 \mathbf{\Lambda}_3  \mathbf{U}_3^{-1}
+= \mathbf{C}_{\rm{M}}^{\rm{z}} (\mathbf{G}^{\rm{z}})^{\sf{T}}
+(\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} \mathbf{G}^{\rm{z}}  \, .\]</p><p>The posterior covariance is then expressed as</p><p class="math-container">\[\mathbf{\widetilde{C}}_{\rm{M}} = 
+\left(  
+\mathbf{U}_1 \otimes \mathbf{U}_2 \otimes \mathbf{U}_3 
+\right)
+ \big( 
+\mathbf{I} + \mathbf{\Lambda}_1 \! \otimes \! \mathbf{\Lambda}_2 \! \otimes \! \mathbf{\Lambda}_3 
+\big)^{-1} 
+\big( 
+\mathbf{U}_1^{-1}  \mathbf{C}_{\rm{M}}^{\rm{x}} \otimes 
+\mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}} \otimes 
+\mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}} 
+\big) \, .\]</p><p>and the posterior mean model as</p><p class="math-container">\[\mathbf{\widetilde{m}} =  
+ \mathbf{m}_{\rm{prior}} +  
+ \Big[ \!
+ \left(  
+\mathbf{U}_1 \otimes \mathbf{U}_2 \otimes \mathbf{U}_3 
+\right)
+ \big( 
+\mathbf{I} + \mathbf{\Lambda}_1\!  \otimes \! \mathbf{\Lambda}_2 \!  \otimes\!  \mathbf{\Lambda}_3 
+\big)^{-1} \\ 
+\times \Big( 
+\left( \mathbf{U}_1^{-1}  \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} \right) \!    \otimes 
+\left( \mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}}  (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1}  \right)   \!   
+\\ 
+\otimes  \left( \mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}} (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} \right)
+\Big)
+\Big] \\
+\times \Big( \mathbf{d}_{\rm{obs}} - \big( \mathbf{G}^{\rm{x}} \otimes \mathbf{G}^{\rm{y}} \otimes \mathbf{G}^{\rm{z}} \big) \, \mathbf{m}_{\rm{prior}} \Big) \, .\]</p><p>These last two formulae are those used by the KronLinInv algorithm.</p><p>Several function are exported by the module KronLinInv:</p><ul><li><p><a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>: Computes the factors necessary to solve the inverse problem</p></li><li><p><a href="#InverseAlgos.KronLinInv.kli_posteriormean"><code>kli_posteriormean</code></a>: Computes the posterior mean model using the previously computed &quot;factors&quot; with <a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>.</p></li><li><p><a href="@ref"><code>kli_blockposteriorcov</code></a>: Computes a block (or all) of the posterior covariance using the previously computed &quot;factors&quot; with <a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>.</p></li><li><p><a href="@ref"><code>kli_bandpostcov</code></a>: NOT YET IMPLEMENTED! Computes a band of the posterior covariance the previously computed &quot;factors&quot; with <a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>.</p></li></ul><h2 id="Usage-examples"><a class="docs-heading-anchor" href="#Usage-examples">Usage examples</a><a id="Usage-examples-1"></a><a class="docs-heading-anchor-permalink" href="#Usage-examples" title="Permalink"></a></h2><p>The input needed is represented by the set of three covariance matrices of the model parameters, the three covariances of the observed data, the three forward model operators, the observed data (a vector) and the prior model (a vector). <em>The <strong>first</strong> thing to compute is always the set of &quot;factors&quot; using the function [`kli</em>calcfactors<code>](@ref).  Finally, the posterior mean (see [</code>kli<em>posteriormean`](@ref KronLinInv.kli</em>posteriormean)) and/or covariance (or part of it) can be computed (see <a href="#InverseAlgos.KronLinInv.kli_blockposteriorcov"><code>kli_blockposteriorcov</code></a>).</p><ul><li><a href="#twodexample">2D example</a></li><li><a href="#threedexample">3D example</a></li></ul><h2 id="twodexample"><a class="docs-heading-anchor" href="#twodexample">2D example</a><a id="twodexample-1"></a><a class="docs-heading-anchor-permalink" href="#twodexample" title="Permalink"></a></h2><p>An example of how to use the code for 2D problems is shown in the following. Notice that the code is written for a 3D problem, however, by setting some of the matrices as identity matrices with size of 1<span>$\times$</span>1, a 2D problem can be solved without much overhead.</p><h3 id="Creating-a-test-problem"><a class="docs-heading-anchor" href="#Creating-a-test-problem">Creating a test problem</a><a id="Creating-a-test-problem-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-a-test-problem" title="Permalink"></a></h3><p>First, we create some input data to simulate a real problem. </p><pre><code class="language-julia hljs"># set the sizes of the problem
+nx = 1
+ny = 20
+nz = 30
+nxobs = 1
+nyobs = 18
+nzobs = 24</code></pre><p>We then construct some covariance matrices and a forward operator. The &quot;first&quot; covariance matrices for model parameters (<span>$\mathbf{C}_{\rm{M}}^{\rm{x}} \, ,  \mathbf{C}_{\rm{M}}^{\rm{y}} \, , \mathbf{C}_{\rm{M}}^{\rm{z}}$</span>) and observed data (<span>$\mathbf{C}_{\rm{D}}^{\rm{x}} \, , \mathbf{C}_{\rm{D}}^{\rm{y}} \, , \mathbf{C}_{\rm{D}}^{\rm{z}}$</span>) are simply an identity matrix of shape 1<span>$\times$</span>1, since it is a 2D problem. The forward relation (forward model) is created from three operators (<span>$\mathbf{G}^{\rm{x}} \, , \mathbf{G}^{\rm{y}} \, , \mathbf{G}^{\rm{z}}$</span>). Remark: the function <code>mkCovSTAT</code> used in the following example is <em>not</em> part of KronLinInv.</p><pre><code class="language-julia hljs">function mkCovSTAT(sigma::Array{Float64,1},nx::Integer,ny::Integer,nz::Integer,
+                   corrlength::Array{Float64,1},kind::String)
+    function cgaussian(dist,corrlength)
+        if maximum(dist)==0.0
+            return 1.0
+        else
+            @assert(corrlength&gt;0.0)
+            return exp.(-(dist./corrlength).^2)
+        end
+    end
+    function cexponential(dist,corrlength)
+        if maximum(dist)==0.0
+            return 1.0
+        else
+            @assert(corrlength&gt;0.0)
+            return exp.(-(dist./corrlength))
+        end
+    end
+
+    npts = nx*ny*nz
+    x = [float(i) for i=1:nx]
+    y = [float(i) for i=1:ny]
+    z = [float(i) for i=1:nz]
+    covmat_x = zeros(nx,nx)
+    covmat_y = zeros(ny,ny)
+    covmat_z = zeros(nz,nz)
+
+    if kind==&quot;gaussian&quot;
+        calccovfun = cgaussian
+    elseif kind==&quot;exponential&quot;
+        calccovfun = cexponential
+    else
+        println(&quot;Error, no or wrong cov &#39;kind&#39; specified&quot;)
+        exit()
+    end
+
+    for i=1:nx
+        covmat_x[i,:] .= sigma[1]^2 .*
+            calccovfun(sqrt.((x.-x[i]).^2),corrlength[1])
+    end
+    for i=1:ny
+        covmat_y[i,:] .= sigma[2]^2 .*
+            calccovfun(sqrt.(((y.-y[i])).^2),corrlength[2])
+    end
+    for i=1:nz
+        covmat_z[i,:] .= sigma[3]^2 .*
+            calccovfun(sqrt.(((z.-z[i])).^2),corrlength[3])
+    end
+
+    return covmat_x,covmat_y,covmat_z
+ end</code></pre><pre><code class="language-julia hljs"># standard deviations
+sigmaobs  = [1.0, 0.1, 0.1] # notice the 1.0 as first element (2D problem)
+sigmam    = [1.0, 0.8, 0.8] # notice the 1.0 as first element (2D problem)
+# correlation lengths
+corlenobs = [0.0, 1.4, 1.4] # notice the 0.0 as first element (2D problem)
+corlenm   = [0.0, 2.5, 2.5] # notice the 0.0 as first element (2D problem)
+# create the covariance matrices on observed data
+Cd1,Cd2,Cd3 = mkCovSTAT(sigmaobs,nxobs,nyobs,nzobs,corlenobs,&quot;gaussian&quot;)
+# create the covariance matrices on model parameters
+Cm1,Cm2,Cm3 = mkCovSTAT(sigmam,nx,ny,nz,corlenm,&quot;gaussian&quot;)
+
+# forward model operator
+G1 = rand(nxobs,nx) # notice that nx=1 and nxobs=1 (2D problem)
+G2 = rand(nyobs,ny)
+G3 = rand(nzobs,nz)</code></pre><p>Finally, a &quot;true/reference&quot; model, in order to compute some synthetic &quot;observed&quot; data and a prior model.</p><pre><code class="language-julia hljs"># create a reference model
+refmod = rand(nx*ny*nz)
+
+# create a prior model
+mprior = copy(refmod) .+ 0.3*randn(length(refmod))
+
+# create some &quot;observed&quot; data
+dobs = kron(G1,kron(G2,G3)) * refmod
+# add some noise to make it more realistic
+dobs = dobs .+ 0.02.*randn(length(dobs))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">432-element Vector{Float64}:
+ 45.29592712356304
+ 47.680138278290364
+ 50.99799773765101
+ 43.96425186652881
+ 35.3661534400752
+ 40.56036087708638
+ 44.9883351616544
+ 40.2706524716692
+ 37.40924562621504
+ 42.862211051701024
+  ⋮
+ 41.18726128161564
+ 51.80068934390357
+ 50.320546039251724
+ 40.09515064281478
+ 52.00849763836254
+ 46.64499335231016
+ 52.04830244752988
+ 46.98246950109774
+ 34.93524331608234</code></pre><p>Now we have create a synthetic example to play with, which we can solve as shown in the following.</p><h3 id="Solving-the-2D-problem"><a class="docs-heading-anchor" href="#Solving-the-2D-problem">Solving the 2D problem</a><a id="Solving-the-2D-problem-1"></a><a class="docs-heading-anchor-permalink" href="#Solving-the-2D-problem" title="Permalink"></a></h3><p>In order to solve the inverse problem using KronLinInv, we first need to compute the &quot;factors&quot; using the function <a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>, which takes as inputs two <code>struct</code>s containing the covariance matrices and the forward operators.</p><pre><code class="language-julia hljs">using InverseAlgos.KronLinInv
+
+# create the covariance matrix structure
+Covs = CovMats(Cd1,Cd2,Cd3,Cm1,Cm2,Cm3)
+
+# forward model operator
+Gfwd = FwdOps(G1,G2,G3)
+
+# calculate the required factors
+klifac = kli_calcfactors(Gfwd,Covs)</code></pre><p>Now the inverse problem can be solved. We first compute the posterior mean and then a subset of the posterior covariance.</p><pre><code class="language-julia hljs"># calculate the posterior mean model
+postm = kli_posteriormean(klifac,Gfwd,mprior,dobs)
+
+# calculate the posterior covariance
+npts = nx*ny*nz
+astart, aend = 1,div(npts,3) # set of rows to be computed
+bstart, bend = 1,div(npts,3) # set of columns to be computed
+
+# compute the block of posterior covariance
+postC = kli_blockposteriorcov(klifac,astart,aend,bstart,bend)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">posteriormean_serial(): Serial version
+posteriormean(): loop 1/3, 2 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 30 of 432; ETA: 0.005 min  posteriormean(): loop 1/3, 60 of 432; ETA: 0.002 min  posteriormean(): loop 1/3, 90 of 432; ETA: 0.001 min  posteriormean(): loop 1/3, 120 of 432; ETA: 0.001 min  posteriormean(): loop 1/3, 150 of 432; ETA: 0.001 min  posteriormean(): loop 1/3, 180 of 432; ETA: 0.001 min  posteriormean(): loop 1/3, 210 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 240 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 270 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 300 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 330 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 360 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 390 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 420 of 432; ETA: 0.0 min  posteriormean(): loop 2/3, 2 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 30 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 60 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 90 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 120 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 150 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 180 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 210 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 240 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 270 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 300 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 330 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 360 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 390 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 420 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 450 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 480 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 510 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 540 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 570 of 600; ETA: 0.0 min  posteriormean(): loop 2/3, 600 of 600; ETA: 0.0 min  posteriormean(): loop 3/3, 2 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 30 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 60 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 90 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 120 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 150 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 180 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 210 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 240 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 270 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 300 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 330 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 360 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 390 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 420 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 450 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 480 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 510 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 540 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 570 of 600; ETA: 0.0 min   posteriormean(): loop 3/3, 600 of 600; ETA: 0.0 min
+blockpostcov_serial(): Serial version
+blockpostcov():  100 of 1 to 200 blockpostcov():  200 of 1 to 200</code></pre><h2 id="threedexample"><a class="docs-heading-anchor" href="#threedexample">3D example</a><a id="threedexample-1"></a><a class="docs-heading-anchor-permalink" href="#threedexample" title="Permalink"></a></h2><p>An example of how to use the code for 3D problems is shown in the following. It follows closely the 3D example.</p><h3 id="Creating-a-test-problem-2"><a class="docs-heading-anchor" href="#Creating-a-test-problem-2">Creating a test problem</a><a class="docs-heading-anchor-permalink" href="#Creating-a-test-problem-2" title="Permalink"></a></h3><p>First, we create some input data to simulate a real problem. </p><pre><code class="language-julia hljs"># set the sizes of the problem
+nx = 7
+ny = 9
+nz = 7
+nxobs = 6
+nyobs = 8
+nzobs = 9</code></pre><p>We then construct some covariance matrices for model parameters (<span>$\mathbf{C}_{\rm{M}}^{\rm{x}} \, ,  \mathbf{C}_{\rm{M}}^{\rm{y}} \, , \mathbf{C}_{\rm{M}}^{\rm{z}}$</span>) and observed data (<span>$\mathbf{C}_{\rm{D}}^{\rm{x}} \, , \mathbf{C}_{\rm{D}}^{\rm{y}} \, , \mathbf{C}_{\rm{D}}^{\rm{z}}$</span>). The forward relation (forward model) is created from three operators (<span>$\mathbf{G}^{\rm{x}} \, , \mathbf{G}^{\rm{y}} \, , \mathbf{G}^{\rm{z}}$</span>). Remark: the function <code>mkCovSTAT</code> used in the following example is <em>not</em> part of KronLinInv.</p><pre><code class="language-julia hljs">function mkCovSTAT(sigma::Array{Float64,1},nx::Integer,ny::Integer,nz::Integer,
+                   corrlength::Array{Float64,1},kind::String)
+    function cgaussian(dist,corrlength)
+        if maximum(dist)==0.0
+            return 1.0
+        else
+            @assert(corrlength&gt;0.0)
+            return exp.(-(dist./corrlength).^2)
+        end
+    end
+    function cexponential(dist,corrlength)
+        if maximum(dist)==0.0
+            return 1.0
+        else
+            @assert(corrlength&gt;0.0)
+            return exp.(-(dist./corrlength))
+        end
+    end
+
+    npts = nx*ny*nz
+    x = [float(i) for i=1:nx]
+    y = [float(i) for i=1:ny]
+    z = [float(i) for i=1:nz]
+    covmat_x = zeros(nx,nx)
+    covmat_y = zeros(ny,ny)
+    covmat_z = zeros(nz,nz)
+
+    if kind==&quot;gaussian&quot;
+        calccovfun = cgaussian
+    elseif kind==&quot;exponential&quot;
+        calccovfun = cexponential
+    else
+        println(&quot;Error, no or wrong cov &#39;kind&#39; specified&quot;)
+        exit()
+    end
+
+    for i=1:nx
+        covmat_x[i,:] .= sigma[1]^2 .*
+            calccovfun(sqrt.((x.-x[i]).^2),corrlength[1])
+    end
+    for i=1:ny
+        covmat_y[i,:] .= sigma[2]^2 .*
+            calccovfun(sqrt.(((y.-y[i])).^2),corrlength[2])
+    end
+    for i=1:nz
+        covmat_z[i,:] .= sigma[3]^2 .*
+            calccovfun(sqrt.(((z.-z[i])).^2),corrlength[3])
+    end
+
+    return covmat_x,covmat_y,covmat_z
+ end</code></pre><pre><code class="language-julia hljs"># standard deviations
+sigmaobs  = [0.1, 0.1, 0.1]
+sigmam    = [0.7, 0.8, 0.8]
+# correlation lengths
+corlenobs = [1.3, 1.4, 1.4]
+corlenm   = [2.5, 2.5, 2.5]
+# create the covariance matrices on observed data
+Cd1,Cd2,Cd3 = mkCovSTAT(sigmaobs,nxobs,nyobs,nzobs,corlenobs,&quot;gaussian&quot;)
+# create the covariance matrices on model parameters
+Cm1,Cm2,Cm3 = mkCovSTAT(sigmam,nx,ny,nz,corlenm,&quot;gaussian&quot;)
+
+# Forward model operator
+G1 = rand(nxobs,nx)
+G2 = rand(nyobs,ny)
+G3 = rand(nzobs,nz)</code></pre><p>Finally, a &quot;true/reference&quot; model, in order to compute some synthetic &quot;observed&quot; data and a prior model.</p><pre><code class="language-julia hljs"># create a reference model
+refmod = rand(nx*ny*nz)
+
+# create a prior model
+mprior = copy(refmod) .+ 0.3.*randn(length(refmod))
+
+# create some &quot;observed&quot; data
+dobs = kron(G1,kron(G2,G3)) * refmod
+# add some noise to make it more realistic
+dobs = dobs .+ 0.02.*randn(length(dobs))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">432-element Vector{Float64}:
+ 30.259649760838574
+ 49.84225972438215
+ 35.75960442738278
+ 51.29348538516658
+ 43.17200628532492
+ 22.79747984706706
+ 44.922431932161636
+ 35.040128881309776
+ 53.68459573211722
+ 38.35761910944187
+  ⋮
+ 32.88646684779149
+ 55.5640237806732
+ 40.56312843344882
+ 56.27385229777008
+ 46.598000998883066
+ 25.58456739576983
+ 49.76326180282242
+ 38.237922077953435
+ 59.816370949933315</code></pre><p>Now we have create a synthetic example to play with, which we can solve as shown in the following.</p><h3 id="Solving-the-3D-problem"><a class="docs-heading-anchor" href="#Solving-the-3D-problem">Solving the 3D problem</a><a id="Solving-the-3D-problem-1"></a><a class="docs-heading-anchor-permalink" href="#Solving-the-3D-problem" title="Permalink"></a></h3><p>In order to solve the inverse problem using KronLinInv, we first need to compute the &quot;factors&quot; using the function <a href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>kli_calcfactors</code></a>, which takes as inputs two <code>struct</code>s containing the covariance matrices and the forward operators.</p><pre><code class="language-julia hljs">using InverseAlgos.KronLinInv
+
+# create the covariance matrix structure
+Covs = CovMats(Cd1,Cd2,Cd3,Cm1,Cm2,Cm3)
+
+# forward model operator
+Gfwd = FwdOps(G1,G2,G3)
+
+# Calculate the required factors
+klifac = kli_calcfactors(Gfwd,Covs)</code></pre><p>Now the inverse problem can be solved. We first compute the posterior mean and then a subset of the posterior covariance.</p><pre><code class="language-julia hljs"># Calculate the posterior mean model
+postm = kli_posteriormean(klifac,Gfwd,mprior,dobs)
+
+# Calculate the posterior covariance
+npts = nx*ny*nz
+astart, aend = 1,div(npts,3) # set of rows to be computed
+bstart, bend = 1,div(npts,3) # set of columns to be computed
+
+# compute the block of posterior covariance
+postC = kli_blockposteriorcov(klifac,astart,aend,bstart,bend)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">posteriormean_serial(): Serial version
+posteriormean(): loop 1/3, 2 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 22 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 44 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 66 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 88 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 110 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 132 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 154 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 176 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 198 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 220 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 242 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 264 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 286 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 308 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 330 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 352 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 374 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 396 of 432; ETA: 0.0 min  posteriormean(): loop 1/3, 418 of 432; ETA: 0.0 min  posteriormean(): loop 2/3, 2 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 22 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 44 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 66 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 88 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 110 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 132 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 154 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 176 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 198 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 220 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 242 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 264 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 286 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 308 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 330 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 352 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 374 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 396 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 418 of 441; ETA: 0.0 min  posteriormean(): loop 2/3, 440 of 441; ETA: 0.0 min  posteriormean(): loop 3/3, 2 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 22 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 44 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 66 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 88 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 110 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 132 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 154 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 176 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 198 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 220 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 242 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 264 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 286 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 308 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 330 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 352 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 374 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 396 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 418 of 441; ETA: 0.0 min   posteriormean(): loop 3/3, 440 of 441; ETA: 0.0 min
+blockpostcov_serial(): Serial version
+blockpostcov():  100 of 1 to 147</code></pre><h2 id="Public-API"><a class="docs-heading-anchor" href="#Public-API">Public API</a><a id="Public-API-1"></a><a class="docs-heading-anchor-permalink" href="#Public-API" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv" href="#InverseAlgos.KronLinInv"><code>InverseAlgos.KronLinInv</code></a> — <span class="docstring-category">Module</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><p>A module to perform Kronecker-product-based linear inversion of geophysical (or other kinds of) data under Gaussian and separability assumptions. The code computes the posterior mean model and the posterior covariance matrix (or subsets of it) in an efficient manner (parallel algorithm) taking into account 3-D correlations both in the model parameters and in the observed data.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/KronLinInv.jl#L2-L5">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.FwdOps" href="#InverseAlgos.KronLinInv.FwdOps"><code>InverseAlgos.KronLinInv.FwdOps</code></a> — <span class="docstring-category">Type</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">FwdOps</code></pre><p>A structure containing the three forward model matrices  G1, G2, G3, where  <span>$\mathbf{G} =  \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3}$</span></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L4-L9">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.CovMats" href="#InverseAlgos.KronLinInv.CovMats"><code>InverseAlgos.KronLinInv.CovMats</code></a> — <span class="docstring-category">Type</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">CovMats</code></pre><p>A structure containing the six covariance matrices <code>Cm1, Cm2, Cm3, Cd1, Cd2, Cd3</code>, where <span>$\mathbf{C}_{\rm{M}} = \mathbf{C}_{\rm{M}}^{\rm{x}} \otimes  \mathbf{C}_{\rm{M}}^{\rm{y}} \otimes \mathbf{C}_{\rm{M}}^{\rm{z}}$</span>  and <span>$\quad \mathbf{C}_{\rm{D}} = \mathbf{C}_{\rm{D}}^{\rm{x}} \otimes  \mathbf{C}_{\rm{D}}^{\rm{y}} \otimes \mathbf{C}_{\rm{D}}^{\rm{z}}$</span></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L17-L26">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.KLIFactors" href="#InverseAlgos.KronLinInv.KLIFactors"><code>InverseAlgos.KronLinInv.KLIFactors</code></a> — <span class="docstring-category">Type</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">KLIFactors</code></pre><p>A structure containing all the factors necessary to perform further calculations with KronLinInv, as, for instance, computations of the posterior mean model or the posterior covariance matrix. The structure includes:</p><ul><li><code>U1, U2, U3</code>:  <span>$\mathbf{U}_1$</span>, <span>$\mathbf{U}_2$</span>, <span>$\mathbf{U}_3$</span>  of  <span>$F_{\sf{A}}$</span> </li><li><code>invlambda</code>:  <span>$\big( \mathbf{I} + \mathbf{\Lambda}_1\!  \otimes \! \mathbf{\Lambda}_2 \!  \otimes\!  \mathbf{\Lambda}_3 \big)^{-1}$</span>  of <span>$F_{\sf{B}}$</span></li><li><code>iUCm1, iUCm2, iUCm3</code>:  <span>$\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}}$</span>, <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{y}}$</span>, <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{z}}$</span> of  <span>$F_{\sf{C}}$</span> </li><li><code>iUCmGtiCd1, iUCmGtiCd1, iUCmGtiCd1</code>:   <span>$\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}}(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1}$</span>, <span>$\mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}} (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1}$</span>, <span>$\mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}} (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1}$</span> of  <span>$F_{\sf{D}}$</span></li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L37-L57">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.kli_calcfactors" href="#InverseAlgos.KronLinInv.kli_calcfactors"><code>InverseAlgos.KronLinInv.kli_calcfactors</code></a> — <span class="docstring-category">Function</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs"> kli_calcfactors(Gfwd::FwdOps,Covs::CovMats)</code></pre><p>Computes the factors necessary to solve the inverse problem. </p><p>The factors are the ones to be stored to subsequently calculate posterior   mean and covariance. First an eigen decomposition is performed, to get</p><p class="math-container">\[   \mathbf{U}_1 \mathbf{\Lambda}_1  \mathbf{U}_1^{-1}  
+   = \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}}
+  (\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} \mathbf{G}^{\rm{x}}\]</p><p class="math-container">\[ \mathbf{U}_2 \mathbf{\Lambda}_2  \mathbf{U}_2^{-1}
+  =  \mathbf{C}_{\rm{M}}^{\rm{y}} (\mathbf{G}^{\rm{y}})^{\sf{T}}
+  (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1} \mathbf{G}^{\rm{y}}\]</p><p class="math-container">\[  \mathbf{U}_3 \mathbf{\Lambda}_3  \mathbf{U}_3^{-1}
+  = \mathbf{C}_{\rm{M}}^{\rm{z}} (\mathbf{G}^{\rm{z}})^{\sf{T}}
+  (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} \mathbf{G}^{\rm{z}} \]</p><p>The principal factors involved in the computation of the posterior covariance and   mean are:</p><p class="math-container">\[  F_{\sf{A}} =  \mathbf{U}_1 \otimes \mathbf{U}_2 \otimes \mathbf{U}_3 \]</p><p class="math-container">\[  F_{\sf{B}} = \big( 
+  \mathbf{I} + \mathbf{\Lambda}_1 \! \otimes \! \mathbf{\Lambda}_2 \!
+  \otimes \! \mathbf{\Lambda}_3 
+  \big)^{-1} \]</p><p class="math-container">\[  F_{\sf{C}} =
+  \mathbf{U}_1^{-1}  \mathbf{C}_{\rm{M}}^{\rm{x}} \otimes 
+  \mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}} \otimes 
+  \mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}} \]</p><p class="math-container">\[  F_{\sf{D}} =   
+  \left( \mathbf{U}_1^{-1}  \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}}
+  (\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1} \right) \!    \otimes 
+  \left( \mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}}  (\mathbf{G}^{\rm{y}})^{\sf{T}}
+  (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1}  \right)   \!   
+  \otimes  \left( \mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}}
+  (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1} \right)\]</p><p>Uses LAPACK.sygvd!(), see <a href="http://www.netlib.org/lapack/lug/node54.html">http://www.netlib.org/lapack/lug/node54.html</a>.   Reduces a real symmetric-definite generalized eigenvalue problem to   the standard form. \n   <span>$B A z = \lambda z$</span> 	B = LLT 	C = LT A L 	z = L y</p><ul><li>A is symmetric</li><li>B is symmetric, positive definite</li></ul><p><strong>Arguments</strong></p><ul><li><code>Gfwd</code>: a <a href="#InverseAlgos.KronLinInv.FwdOps"><code>FwdOps</code></a> structure containing the three forward model matrices  G1, G2 and G3, where     <span>$\mathbf{G} =  \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3}$</span></li><li><code>Covs</code>: a <a href="#InverseAlgos.KronLinInv.CovMats"><code>CovMats</code></a> structure containing the six covariance matrices <span>$\mathbf{C}_{\rm{M}} = \mathbf{C}_{\rm{M}}^{\rm{x}} \otimes \mathbf{C}_{\rm{M}}^{\rm{y}} \otimes \mathbf{C}_{\rm{M}}^{\rm{z}}$</span> and <span>$\mathbf{C}_{\rm{D}} = \mathbf{C}_{\rm{D}}^{\rm{x}} \otimes \mathbf{C}_{\rm{D}}^{\rm{y}} \otimes \mathbf{C}_{\rm{D}}^{\rm{z}}$</span></li></ul><p><strong>Returns</strong></p><ul><li><p>A <a href="#InverseAlgos.KronLinInv.KLIFactors"><code>KLIFactors</code></a> structure containing all the &quot;factors&quot; necessary to perform further calculations with KronLinInv,   as, for instance, computations of the posterior mean model or the posterior covariance matrix.    The structure includes:</p><ul><li><code>U1, U2, U3</code>:  <span>$\mathbf{U}_1$</span>, <span>$\mathbf{U}_2$</span>, <span>$\mathbf{U}_3$</span>  of  <span>$F_{\sf{A}}$</span> </li><li><code>invlambda</code>:  <span>$F_{\sf{B}}$</span></li><li><code>iUCm1, iUCm2, iUCm3</code>:  <span>$\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}}$</span>,  <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{y}}$</span>,   <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{z}}$</span> of  <span>$F_{\sf{C}}$</span> </li><li><code>iUCmGtiCd1, iUCmGtiCd1, iUCmGtiCd1</code>:  <span>$\mathbf{U}_1^{-1}   \mathbf{C}_{\rm{M}}^{\rm{x}}   (\mathbf{G}^{\rm{x}})^{\sf{T}}(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1}$</span>,   <span>$\mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}}   (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1}$</span>,   <span>$\mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}}   (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1}$</span>   of  <span>$F_{\sf{D}}$</span> </li></ul></li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L74-L164">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.kli_posteriormean" href="#InverseAlgos.KronLinInv.kli_posteriormean"><code>InverseAlgos.KronLinInv.kli_posteriormean</code></a> — <span class="docstring-category">Function</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">kli_posteriormean(klifac::KLIFactors,Gfwd::FwdOps,mprior::Array{Float64,1},
+                  dobs::Array{Float64,1}; parall::Symbol=:serial)</code></pre><p>Computes the posterior mean model for a distributed memory setup.</p><p><strong>Arguments</strong></p><ul><li><code>klifac</code>: a structure containing the required &quot;factors&quot; previously computed with    the function <code>kli_calcfactors()</code>. It includes<ul><li><code>U1, U2, U3</code> <span>$\mathbf{U}_1$</span>, <span>$\mathbf{U}_2$</span>, <span>$\mathbf{U}_3$</span>  of  <span>$F_{\sf{A}}$</span></li><li><code>diaginvlambda</code> <span>$F_{\sf{B}}$</span></li><li><code>iUCmGtiCd1, iUCmGtiCd2, iUCmGtiCd3</code> <span>$\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}} (\mathbf{G}^{\rm{x}})^{\sf{T}}(\mathbf{C}_{\rm{D}}^{\rm{x}})^{-1}$</span>, <span>$\mathbf{U}_2^{-1} \mathbf{C}_{\rm{M}}^{\rm{y}} (\mathbf{G}^{\rm{y}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{y}})^{-1}$</span>, <span>$\mathbf{U}_3^{-1} \mathbf{C}_{\rm{M}}^{\rm{z}} (\mathbf{G}^{\rm{z}})^{\sf{T}} (\mathbf{C}_{\rm{D}}^{\rm{z}})^{-1}$</span> of  <span>$F_{\sf{D}}$</span></li></ul></li><li><code>FwdOps</code>: a structure containing the three forward matrices<ul><li><code>G1, G2, G3</code> <span>$\mathbf{G} = \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3}$</span></li></ul></li><li><code>mprior</code>: prior model (vector)</li><li><code>dobs</code>:  observed data (vector)</li><li><code>parall</code>: type of parallelization: :serial, ;sharedmem, :distrmem</li></ul><p><strong>Returns</strong></p><ul><li>The posterior mean model (vector)</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L240-L267">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="InverseAlgos.KronLinInv.kli_blockposteriorcov" href="#InverseAlgos.KronLinInv.kli_blockposteriorcov"><code>InverseAlgos.KronLinInv.kli_blockposteriorcov</code></a> — <span class="docstring-category">Function</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">kli_blockpostcov(klifac::KLIFactors,astart::Int64,aend::Int64,
+             bstart::Int64,bend::Int64; parall::Symbol=:serial)</code></pre><p>Computes a block of the posterior covariance, purely serial version. </p><p><strong>Arguments</strong></p><ul><li><code>klifac</code>: a structure containing the required &quot;factors&quot; previously computed with    the function <code>kli_calcfactors()</code>. It includes<ul><li>U1,U2,U3 <span>$\mathbf{U}_1$</span>, <span>$\mathbf{U}_2$</span>, <span>$\mathbf{U}_3$</span> of <span>$F_{\sf{A}}$</span></li><li>diaginvlambda <span>$F_{\sf{B}}$</span></li><li>iUCm1, iUCm2, iUCm3  <span>$\mathbf{U}_1^{-1} \mathbf{C}_{\rm{M}}^{\rm{x}}$</span>, <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{y}}$</span>, <span>$\mathbf{U}_2^{-1}  \mathbf{C}_{\rm{M}}^{\rm{z}}$</span> of  <span>$F_{\sf{C}}$</span> </li></ul></li><li><code>Gfwd</code>: a structure containing the three forward model matrices  G1,G2,G3, where     <span>$\mathbf{G} =  \mathbf{G_1} \otimes \mathbf{G_2} \otimes \mathbf{G_3}$</span></li><li><code>astart, aend</code>: indices of the first and last rowa of the requested block</li><li><code>bstart, bend</code>: indices of the first and last columns of the requested block</li><li><code>parall</code>: type of parallelization: :serial, ;sharedmem, :distrmem</li></ul><p><strong>Returns</strong></p><ul><li>The requested block of the posterior covariance.</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/GinvLab/InverseAlgos.jl/blob/9dbaebdc19e5a73f851b5bfccd165367e00f001f/src/KronLinInv/common_structfunc.jl#L290-L314">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../optimizers/">« Optimizers</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.1 on <span class="colophon-date" title="Wednesday 5 March 2025 15:47">Wednesday 5 March 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
