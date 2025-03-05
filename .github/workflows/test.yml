@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-    tags: '*'
+    tags: 'v*'
   pull_request:
     branches:
       - develop
@@ -25,9 +25,9 @@ jobs:
     if : github.event.pull_request.draft == false
     strategy:
       matrix:
-        julia-version: ['1'] #['lts', '1', 'pre']
+        julia-version: ['1.11'] #['lts', '1', 'pre']
         arch: [x64] #[x64, x86]
-        os: [ubuntu-latest, macOS-latest] #[ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest] #, macOS-latest] #[ubuntu-latest, windows-latest, macOS-latest]
         include:
           - os: macOS-latest
             julia-version: '1'

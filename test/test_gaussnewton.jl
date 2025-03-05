@@ -61,7 +61,6 @@ function test_gaussnewton2()
         return
     end
     
-
     a,b = 2,3
     x = collect(range(0,5,length=25))
     y = fwd(a,b,x) 

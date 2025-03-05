@@ -136,9 +136,11 @@ function gaussnewton(calcfwd!::Function,
         mul!(H,transpose(jac),invCd_J,1.0,1.0)
         # solve linear system
         #faJtJ = factorize(Symmetric(H)) # this seems to get singular...
-        faH = lu(H) 
-        ## (J^T*invCd*J + invCm) p_gn = - (J^T*invCd) *res
-        ##  pkgn is the descent direction
+        @show H
+        faH = lu(H)
+        @show faH
+        # ## (J^T*invCd*J + invCm) p_gn = - (J^T*invCd) *res
+        # ##  pkgn is the descent direction
         ldiv!(pkgn,faH,-grad)
         ##===============================
 
