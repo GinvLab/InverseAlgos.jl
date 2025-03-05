@@ -7,7 +7,7 @@ makedocs(modules = [InverseAlgos],
          format = Documenter.HTML(prettyurls=get(ENV,"CI",nothing)=="true"),
          pages = [
              "Home" => "index.md",
-             "MCSamplers" => "mcsamplers.md",
+             "Samplers" => "samplers.md",
              "Optimizers" => "optimizers.md",
              "KronLinInv" => "kronlininv.md"
          ],

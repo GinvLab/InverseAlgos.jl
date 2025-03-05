@@ -36,7 +36,7 @@ function test_gaussnewton1()
                                xprior=xprior,
                                maxiter=maxiter)
 
-    ce1 =isapprox(xout[end],tvec,rtol=1e-2)
+    ce1 = isapprox(xout[end],tvec,rtol=1e-2)
     return ce1 
 end
 

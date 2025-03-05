@@ -9,7 +9,7 @@ using Logging
 include("utils.jl")
 include("test_lmbfgs.jl")
 include("test_kronlininv.jl")
-
+include("test_gaussnewton.jl")
 
 
 # suppress all messages from algos
