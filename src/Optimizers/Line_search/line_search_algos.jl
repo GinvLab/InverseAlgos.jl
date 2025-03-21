@@ -145,6 +145,8 @@ function zoom!(g_full::Vector,x0αp::Vector{Float64},
 
             if gtrial*(αhi-αlo) >= 0.0
                 αhi = αlo
+                ghi = glo
+                ϕhi = ϕlo
             end
 
             αlo = α
