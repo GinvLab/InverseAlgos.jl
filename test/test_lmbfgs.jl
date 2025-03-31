@@ -57,13 +57,16 @@ function test_bfgs2()
         return phi
     end
 
-    x0 = [-0.5,-4.5]
+    x0 = [-0.5,4.5]
 
-    xout,misfout = lmbfgs(fh!,x0,mem=10,maxiter=20,
+    xout,misfout = lmbfgs(fh!,x0,mem=10,maxiter=10,
                           saveres=false)
 
     ce1 = xout[end] ≈ tvec
     ce2 = isapprox(misfout[end],stmin,rtol=1e-4)
+
+    @show ce1,ce2
+    @show xout[end],tvec
 
     return ce1 && ce2
 end
