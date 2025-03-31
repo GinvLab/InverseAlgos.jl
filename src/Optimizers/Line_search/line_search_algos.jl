@@ -135,7 +135,8 @@ function zoom!(g_full::Vector,x0αp::Vector{Float64},
         
         if (ϕtrial > ϕ0.+c1*α*dϕdα_0) || (ϕtrial>=ϕlo)
             αhi = α
-
+            ghi = gtrial
+            ϕhi = ϕtrial
         else
             if abs(gtrial) <= -c2*dϕdα_0
                 αout = α
@@ -150,6 +151,7 @@ function zoom!(g_full::Vector,x0αp::Vector{Float64},
             end
 
             αlo = α
+            glo = gtrial
             ϕlo = ϕtrial
         end
     end
