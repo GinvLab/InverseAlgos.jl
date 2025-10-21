@@ -208,7 +208,7 @@ function oneiterNUTS_polyg!(usermodel::NLogPostPDF,HMCpar::NUTSParams,NUTSextrap
         error("Ucur is NaN")
     end
     ## above  mnew = copy(mcur), so return mnew directly
-    return mnew,accept,Ucur,usermodel.curval
+    return mnew,accept,Ucur,usermodel.curvals
 end
 
 
