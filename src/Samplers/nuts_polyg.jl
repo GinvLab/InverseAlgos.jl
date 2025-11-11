@@ -259,8 +259,10 @@ function leapfrog_pos_polyg(m, p, ϵ, usermodel,HMCpar,grptask)
     if isdefined(usermodel.likelihood,:dofwdchecks) && usermodel.likelihood.dofwdchecks
         # checksucceded = fwdchecks!(usermodel.likelihood,mcur,mnew,pnew,il,HMCpar.L)
         checksucceded = usermodel.likelihood(m,mtilde,ptilde,lowcon,upcon,HMCpar.LcholmassM,"performchecks")
-        # get out
-        return mtilde,ptilde,checksucceded
+        if checksucceded==false
+            # get out
+            return mtilde,ptilde,checksucceded
+        end
     else
         # in case there are no checks
         checksucceded = true
@@ -324,8 +326,10 @@ function leapfrog_mom_polyg(m, p, ϵ, usermodel,HMCpar,grptask)
     if isdefined(usermodel.likelihood,:dofwdchecks) && usermodel.likelihood.dofwdchecks
         # checksucceded = fwdchecks!(usermodel.likelihood,mcur,mnew,pnew,il,HMCpar.L)
         checksucceded = usermodel.likelihood(m,mtilde,ptilde,lowcon,upcon,HMCpar.LcholmassM,"performchecks")
-        # get out
-        return mtilde,ptilde,checksucceded
+        if checksucceded==false
+            # get out
+            return mtilde,ptilde,checksucceded
+        end
     else
         # in case there are no checks
         checksucceded = true
@@ -366,8 +370,10 @@ function leapfrog_mom_polyg(m, p, ϵ, usermodel,HMCpar,grptask)
     if isdefined(usermodel.likelihood,:dofwdchecks) && usermodel.likelihood.dofwdchecks
         # checksucceded = fwdchecks!(usermodel.likelihood,mcur,mnew,pnew,il,HMCpar.L)
         checksucceded = usermodel.likelihood(m,mtilde,ptilde,lowcon,upcon,HMCpar.LcholmassM,"performchecks")
-        # get out
-        return mtilde,ptilde,checksucceded
+        if checksucceded==false
+            # get out
+            return mtilde,ptilde,checksucceded
+        end
     else
         # in case there are no checks
         checksucceded = true

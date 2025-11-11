@@ -341,7 +341,7 @@ A single iteration of the HMC algorithm, where a given number of
 function oneiterhmc_polyg(nlogppd::NLogPostPDF,HMCpar::HMCParams,mcur::Vector{Float64},Ucur::Float64,
                         grptask::Array{Int,2})
 
-    maxbreakcheck = 20
+    maxbreakcheck = Int(floor(HMCpar.L*0.1))
 
     #bodyindicesorg = nlogppd.likelihood()
     # mnew = nothing
