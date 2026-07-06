@@ -284,12 +284,12 @@ function runsimulNUTS(pars::Dict,HMCpar::NUTSParams,nlogppd::NLogPostPDF,
         # iteration of NUTS
         if dofwdchecks
             # NUTS iterations performing also checks specific for polygonal bodies
-            mcur,accept,Ucur,llkprival = oneiterNUTS_polyg!(nlogppd,HMCpar,NUTSpar,mcur,grptask,
-                                                  actualit,nustats,naccvec)
+            mcur,accept,Ucur,llkprival = oneiterNUTS_poly!(nlogppd,HMCpar,NUTSpar,mcur,grptask,
+                                                           actualit,nustats,naccvec)
         else
             #stardard iteration
             mcur,accept,Ucur,llkprival = oneiterNUTS!(nlogppd,HMCpar,NUTSpar,mcur,grptask,
-                                            actualit,nustats,naccvec)
+                                                      actualit,nustats,naccvec)
         end
 
         # if accepted
@@ -300,7 +300,7 @@ function runsimulNUTS(pars::Dict,HMCpar::NUTSParams,nlogppd::NLogPostPDF,
         
         ## save models etc
         if dofwdchecks
-            # save also bodyindices for :polygonalprob
+            # save also bodyindices for :polyprob
             savestuff!(fid_h5,ntobesaved,pars,nsaved,actualit,mcur,nacc,Ucur,
                        llkprival=llkprival,
                        nustats=nustats,algo=HMCpar.algo,fwdmod=nlogppd.likelihood)
