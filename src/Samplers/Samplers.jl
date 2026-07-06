@@ -53,8 +53,8 @@ include("parallelfunc.jl")
 include("hammcsampler.jl")
 # NUTS sampler
 include("nuts.jl")
-# NUTS sampler for polygonal bodies 
-include("nuts_polyg.jl")
+# NUTS sampler for polygonal/polyhedral bodies 
+include("nuts_poly.jl")
 # Extended Metropolis algo
 include("extmetrop.jl")
 
