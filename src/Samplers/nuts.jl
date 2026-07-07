@@ -283,7 +283,7 @@ function runsimulNUTS(pars::Dict,HMCpar::NUTSParams,nlogppd::NLogPostPDF,
 
         # iteration of NUTS
         if dofwdchecks
-            # NUTS iterations performing also checks specific for polygonal bodies
+            # NUTS iterations performing also checks specific for polygonal/polyhedral bodies
             mcur,accept,Ucur,llkprival = oneiterNUTS_poly!(nlogppd,HMCpar,NUTSpar,mcur,grptask,
                                                            actualit,nustats,naccvec)
         else
